@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		606A199C16F5E3D500168B42 /* L8Version.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A199B16F5E3D500168B42 /* L8Version.m */; };
 		606A199F16F5E63A00168B42 /* L8Sensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A199E16F5E63A00168B42 /* L8Sensor.m */; };
+		606A19A316F5FC8700168B42 /* L8Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A19A216F5FC8700168B42 /* L8Animation.m */; };
 		60C8807616F5069B004C1844 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C8807516F5069B004C1844 /* Foundation.framework */; };
 		60C8807B16F5069B004C1844 /* l8_sdk_objc.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 60C8807A16F5069B004C1844 /* l8_sdk_objc.h */; };
 		60C8807D16F5069B004C1844 /* l8_sdk_objc.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C8807C16F5069B004C1844 /* l8_sdk_objc.m */; };
@@ -67,6 +68,8 @@
 		606A199B16F5E3D500168B42 /* L8Version.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = L8Version.m; sourceTree = "<group>"; };
 		606A199D16F5E63A00168B42 /* L8Sensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = L8Sensor.h; sourceTree = "<group>"; };
 		606A199E16F5E63A00168B42 /* L8Sensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = L8Sensor.m; sourceTree = "<group>"; };
+		606A19A116F5FC8700168B42 /* L8Animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = L8Animation.h; sourceTree = "<group>"; };
+		606A19A216F5FC8700168B42 /* L8Animation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = L8Animation.m; sourceTree = "<group>"; };
 		60C8807216F5069B004C1844 /* libl8-sdk-objc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libl8-sdk-objc.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		60C8807516F5069B004C1844 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		60C8807916F5069B004C1844 /* l8-sdk-objc-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "l8-sdk-objc-Prefix.pch"; sourceTree = "<group>"; };
@@ -194,6 +197,8 @@
 				606A199B16F5E3D500168B42 /* L8Version.m */,
 				606A199D16F5E63A00168B42 /* L8Sensor.h */,
 				606A199E16F5E63A00168B42 /* L8Sensor.m */,
+				606A19A116F5FC8700168B42 /* L8Animation.h */,
+				606A19A216F5FC8700168B42 /* L8Animation.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -378,6 +383,7 @@
 				60C880D916F537F6004C1844 /* ColorUtils.m in Sources */,
 				606A199C16F5E3D500168B42 /* L8Version.m in Sources */,
 				606A199F16F5E63A00168B42 /* L8Sensor.m in Sources */,
+				606A19A316F5FC8700168B42 /* L8Animation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

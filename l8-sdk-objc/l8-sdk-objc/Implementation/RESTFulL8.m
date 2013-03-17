@@ -433,4 +433,37 @@
     
 }
 
+- (NSString *)printColorMatrix:(NSArray *)colorMatrix
+{
+    NSMutableArray *colors = [NSMutableArray arrayWithCapacity:64];
+    for (int i = 0; i < colorMatrix.count; i++) {
+        NSArray *row = [colorMatrix objectAtIndex:i];
+        for (int j = 0; j < row.count; j++) {
+            UIColor *color = [row objectAtIndex:j];
+            [colors addObject:[self printColor:color]];
+        }
+    }
+    return [colors componentsJoinedByString:@"-"];
+}
+
+- (void)setAnimation:(L8Animation *)animation withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:64];
+    for (int i = 0; i < 8; i++) {
+        if (i < animation.frames.count) {
+            L8Frame *frame = [animation.frames objectAtIndex:i];
+            [params setObject:[self printColorMatrix:frame.colorMatrix] forKey:[NSString stringWithFormat:@"frame%d", i]];
+            [params setObject:[NSNumber numberWithInt:frame.duration] forKey:[NSString stringWithFormat:@"frame%d_duration", i]];
+        } else {
+            [params setObject:@"" forKey:[NSString stringWithFormat:@"frame%d", i]];
+            [params setObject:[NSNumber numberWithInt:0] forKey:[NSString stringWithFormat:@"frame%d_duration", i]];
+        }
+    }
+    [self putPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@", [self l8Id]]]
+           params:params
+          success:success
+          failure:failure
+     ];
+}
+
 @end

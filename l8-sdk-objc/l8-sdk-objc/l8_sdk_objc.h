@@ -11,6 +11,7 @@
 
 #import "L8Version.h"
 #import "L8Sensor.h"
+#import "L8Animation.h"
 
 typedef void(^L8VoidOperationHandler)();
 typedef void(^L8ColorOperationHandler)(UIColor *result);
@@ -75,12 +76,9 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 
 - (void)readVersionWithSuccess:(L8VersionOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
-/*
-public void setAnimation(Animation animation) throws L8Exception;
-*/
+- (void)setAnimation:(L8Animation *)animation withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (NSString *)connectionURL;
-
 
 @end
 

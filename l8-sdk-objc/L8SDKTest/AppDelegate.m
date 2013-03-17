@@ -113,6 +113,42 @@
         };
         [self.l8 readMatrixWithSuccess:cm failure:f];
         
+        NSMutableArray *colorMatrix1 = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix1 addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix1 objectAtIndex:i] addObject:[UIColor redColor]];
+            }
+        }
+        L8Frame *frame1 = [[L8Frame alloc] init];
+        [frame1 setColorMatrix:colorMatrix1];
+        [frame1 setDuration:100];
+        
+        NSMutableArray *colorMatrix2 = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix2 addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix2 objectAtIndex:i] addObject:[UIColor blueColor]];
+            }
+        }
+        L8Frame *frame2 = [[L8Frame alloc] init];
+        [frame2 setColorMatrix:colorMatrix2];
+        [frame2 setDuration:100];
+        
+        NSMutableArray *colorMatrix3 = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix3 addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix3 objectAtIndex:i] addObject:[UIColor yellowColor]];
+            }
+        }
+        L8Frame *frame3 = [[L8Frame alloc] init];
+        [frame3 setColorMatrix:colorMatrix3];
+        [frame3 setDuration:200];
+        
+        L8Animation *animation = [[L8Animation alloc] init];
+        animation.frames = [NSMutableArray arrayWithObjects:frame1, frame2, frame3, nil];
+        [self.l8 setAnimation:animation withSuccess:v failure:f];
         
     };
     L8JSONOperationHandler failure = ^(NSMutableDictionary *response) {
