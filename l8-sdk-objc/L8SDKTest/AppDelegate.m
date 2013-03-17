@@ -23,7 +23,7 @@
     
     L8VoidOperationHandler success = ^() {
         NSLog(@"Created L8 with id: %@ accesible at %@", [self.l8 l8Id], [self.l8 connectionURL]);
-        
+
         L8VoidOperationHandler v = ^() {
             NSLog(@"success");
         };
@@ -42,6 +42,7 @@
         L8JSONOperationHandler f = ^(NSMutableDictionary *r) {
             NSLog(@"failure: %@", r);
         };
+
         
         [self.l8 setSuperLED:[UIColor yellowColor] withSuccess:v failure:f];        
         

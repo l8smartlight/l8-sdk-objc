@@ -12,8 +12,18 @@
 #import "ColorUtils.h"
 #import "L8Sensor.h"
 
+//#define DEVELOPMENT
+#define PREPRODUCTION
+//#define PRODUCTION
+
+#ifdef DEVELOPMENT
 #define SIMUL8TOR_BASE_URL @"http://192.168.1.165:8888"
 #define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
+#endif
+#ifdef PREPRODUCTION
+#define SIMUL8TOR_BASE_URL @"http://54.228.218.122"
+#define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
+#endif
 
 @interface RESTFulL8()
 
