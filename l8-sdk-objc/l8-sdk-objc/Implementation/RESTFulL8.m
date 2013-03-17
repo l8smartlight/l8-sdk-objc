@@ -36,7 +36,7 @@
     return self;
 }
 
-- (NSString *)getPath:(NSString *)path
+- (NSString *)buildPath:(NSString *)path
 {
     return [NSString stringWithFormat:@"%@%@", SIMUL8TOR_BASE_PATH, path];
 }
@@ -56,9 +56,86 @@
     return json;
 }
 
+- (void)putPath:(NSString *)path params:(NSMutableDictionary *)params success:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client putPath:path
+              parameters:params
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     if (success != nil) {
+                         success();
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
+}
+
+- (void)getIntegerWithPath:(NSString *)path key:(NSString *)key success:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:path
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
+                     NSString *value = [json objectForKey:key];
+                     NSInteger result = [value integerValue];
+                     if (success != nil) {
+                         success(result);
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
+}
+
+- (void)getColorWithPath:(NSString *)path key:(NSString *)key success:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:path
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
+                     NSString *value = [json objectForKey:key];
+                     UIColor *result = [UIColor colorWithString:value];
+                     if (success != nil) {
+                         success(result);
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
+}
+
+- (void)getBooleanWithPath:(NSString *)path key:(NSString *)key success:(L8BooleanOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:path
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
+                     NSString *value = [json objectForKey:key];
+                     BOOL result = [value boolValue];
+                     if (success != nil) {
+                         success(result);
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
+}
+
 - (void)createSimulatorWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    [self.client postPath:[self getPath:@"/l8s"]
+    [self.client postPath:[self buildPath:@"/l8s"]
                parameters:nil
                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
                       NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
@@ -99,18 +176,10 @@
 {
     NSString *ledKey = [NSString stringWithFormat:@"led%.f%.f", point.x, point.y];
     NSString *colorValue = [self printColor:color];
-    [self.client putPath:[self getPath:[NSString stringWithFormat:@"/l8s/%@", [self l8Id]]]
-              parameters:[NSMutableDictionary dictionaryWithObject:colorValue forKey:ledKey]
-                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                     if (success != nil) {
-                         success();
-                     }
-                 }
-                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                     if (failure != nil) {
-                         failure([self createError:error]);
-                     }
-                 }
+    [self putPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@", [self l8Id]]]
+           params:[NSMutableDictionary dictionaryWithObject:colorValue forKey:ledKey]
+          success:success
+          failure:failure
      ];
 }
 
@@ -122,39 +191,19 @@
 - (void)readLED:(CGPoint)point withSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
     NSString *ledKey = [NSString stringWithFormat:@"led%.f%.f", point.x, point.y];
-    [self.client getPath:[self getPath:[NSString stringWithFormat:@"/l8s/%@/led/%@", [self l8Id], ledKey]]
-              parameters:nil
-                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
-                     NSString *color = [json objectForKey:ledKey];
-                     UIColor *result = [UIColor colorWithString:color];
-                     if (success != nil) {
-                         success(result);
-                     }
-                 }
-                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                     if (failure != nil) {
-                         failure([self createError:error]);
-                     }
-                 }
-     ];
+    [self getColorWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/led/%@", [self l8Id], ledKey]]
+                       key:ledKey
+                   success:success
+                   failure:failure];
 }
 
 - (void)setSuperLED:(UIColor *)color withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
     NSString *colorValue = [self printColor:color];
-    [self.client putPath:[self getPath:[NSString stringWithFormat:@"/l8s/%@/superled", [self l8Id]]]
-              parameters:[NSMutableDictionary dictionaryWithObject:colorValue forKey:@"superled"]
-                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                     if (success != nil) {
-                         success();
-                     }
-                 }
-                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                     if (failure != nil) {
-                         failure([self createError:error]);
-                     }
-                 }
+    [self putPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/superled", [self l8Id]]]
+           params:[NSMutableDictionary dictionaryWithObject:colorValue forKey:@"superled"]
+          success:success
+          failure:failure
      ];
 }
 
@@ -165,14 +214,70 @@
 
 - (void)readSuperLEDWithSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    [self.client getPath:[self getPath:[NSString stringWithFormat:@"/l8s/%@/superled", [self l8Id]]]
+    [self getColorWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/superled", [self l8Id]]]
+                       key:@"superled"
+                   success:success
+                   failure:failure];
+}
+
+- (void)readBatteryStatusWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self getIntegerWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/battery_status", [self l8Id]]]
+                         key:@"battery_status"
+                     success:success
+                     failure:failure
+     ];
+}
+
+- (void)readButtonWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self getIntegerWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/button", [self l8Id]]]
+                         key:@"button"
+                     success:success
+                     failure:failure
+     ];
+}
+
+- (void)readMemorySizeWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self getIntegerWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/memory_size", [self l8Id]]]
+                         key:@"memory_size"
+                     success:success
+                     failure:failure
+     ];
+}
+
+- (void)readFreeMemoryWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self getIntegerWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/free_memory", [self l8Id]]]
+                         key:@"free_memory"
+                     success:success
+                     failure:failure
+     ];
+}
+
+- (void)readBluetoothEnabledWithSuccess:(L8BooleanOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self getBooleanWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/bluetooth_enabled", [self l8Id]]]
+                         key:@"bluetooth_enabled"
+                     success:success
+                     failure:failure
+     ];    
+}
+
+- (void)readVersionWithSuccess:(L8VersionOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/version", [self l8Id]]]
               parameters:nil
                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                      NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
-                     NSString *color = [json objectForKey:@"superled"];
-                     UIColor *result = [UIColor colorWithString:color];
+                     NSString *hardwareValue = [json objectForKey:@"hardware_version"];
+                     NSString *softwareValue = [json objectForKey:@"software_version"];
+                     L8Version *version = [[L8Version alloc] init];
+                     version.hardware = [hardwareValue integerValue];
+                     version.software = [softwareValue integerValue];
                      if (success != nil) {
-                         success(result);
+                         success(version);
                      }
                  }
                  failure:^(AFHTTPRequestOperation *operation, NSError *error){
@@ -180,6 +285,35 @@
                          failure([self createError:error]);
                      }
                  }
+     ];    
+}
+
+- (void)readSensorEnabled:(L8Sensor *)sensor withSuccess:(L8BooleanOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self getBooleanWithPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/sensor/%@/enabled", [self l8Id], sensor.name]]
+                         key:[NSString stringWithFormat:@"%@_enabled", sensor.name]
+                     success:success
+                     failure:failure
+     ];
+}
+
+- (void)enableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    NSString *sensorKey = [NSString stringWithFormat:@"%@_sensor_enabled", sensor.name];
+    [self putPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@", [self l8Id]]]
+           params:[NSMutableDictionary dictionaryWithObject:@"1" forKey:sensorKey]
+          success:success
+          failure:failure
+     ];
+}
+
+- (void)disableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    NSString *sensorKey = [NSString stringWithFormat:@"%@_sensor_enabled", sensor.name];
+    [self putPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@", [self l8Id]]]
+           params:[NSMutableDictionary dictionaryWithObject:@"0" forKey:sensorKey]
+          success:success
+          failure:failure
      ];
 }
 

@@ -9,10 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "L8Version.h"
+#import "L8Sensor.h"
+
 typedef void(^L8VoidOperationHandler)();
 typedef void(^L8ColorOperationHandler)(UIColor *result);
 typedef void(^L8BooleanOperationHandler)(BOOL result);
-typedef void(^L8IntegerOperationHandler)(int result);
+typedef void(^L8IntegerOperationHandler)(NSInteger result);
+typedef void(^L8VersionOperationHandler)(L8Version *result);
 typedef void(^L8JSONOperationHandler)(NSMutableDictionary *result);
 
 typedef enum {
@@ -50,31 +54,30 @@ public Color[][] readMatrix() throws L8Exception;
 - (void)readSuperLEDWithSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 /*
-public void enableSensor(Sensor sensor) throws L8Exception;
-
 public Sensor.Status readSensor(Sensor sensor) throws L8Exception;
-
-public void disableSensor(Sensor sensor) throws L8Exception;
-
-public boolean isSensorEnabled(Sensor sensor) throws L8Exception;
-
-public boolean isBluetoothEnabled() throws L8Exception;
-
-public int getBatteryStatus() throws L8Exception;
-
-public int getButton() throws L8Exception;
-
-public int getMemorySize() throws L8Exception;
-
-public int getFreeMemory() throws L8Exception;
 */
+
+- (void)enableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)disableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readSensorEnabled:(L8Sensor *)sensor withSuccess:(L8BooleanOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readBluetoothEnabledWithSuccess:(L8BooleanOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readBatteryStatusWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readButtonWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readMemorySizeWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readFreeMemoryWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (NSString *)l8Id;
 
+- (void)readVersionWithSuccess:(L8VersionOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 /*
-public L8.Version getVersion() throws L8Exception;
-
 public void setAnimation(Animation animation) throws L8Exception;
 */
 
