@@ -14,6 +14,7 @@
 
 typedef void(^L8VoidOperationHandler)();
 typedef void(^L8ColorOperationHandler)(UIColor *result);
+typedef void(^L8ColorMatrixOperationHandler)(NSArray *result);
 typedef void(^L8BooleanOperationHandler)(BOOL result);
 typedef void(^L8IntegerOperationHandler)(NSInteger result);
 typedef void(^L8VersionOperationHandler)(L8Version *result);
@@ -34,13 +35,11 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 
 - (L8ConnectionType)getConnectionType;
 
-/*
-public void setMatrix(Color[][] colorMatrix) throws L8Exception;
+- (void)setMatrix:(NSArray *)colorMatrix withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
-public void clearMatrix() throws L8Exception;
+- (void)clearMatrixWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
-public Color[][] readMatrix() throws L8Exception;
-*/
+- (void)readMatrixWithSuccess:(L8ColorMatrixOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (void)setLED:(CGPoint)point color:(UIColor *)color withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 

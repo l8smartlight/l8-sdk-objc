@@ -92,6 +92,28 @@
                       }
                           failure:f];
         
+        NSMutableArray *colorMatrix = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix objectAtIndex:i] addObject:[UIColor redColor]];
+            }
+        }
+        [self.l8 clearMatrixWithSuccess:v failure:f];
+        [self.l8 setMatrix:colorMatrix withSuccess:v failure:f];
+        
+        L8ColorMatrixOperationHandler cm = ^(NSArray *colorMatrix) {
+            for (int i = 0; i < colorMatrix.count; i++) {
+                NSArray *columns = [colorMatrix objectAtIndex:i];
+                for (int j = 0; j < columns.count; j++) {
+                    UIColor *color = [columns objectAtIndex:j];
+                    NSLog(@"(%d, %d): %@", i, j, [color stringValue]);
+                }
+            }
+        };
+        [self.l8 readMatrixWithSuccess:cm failure:f];
+        
+        
     };
     L8JSONOperationHandler failure = ^(NSMutableDictionary *response) {
         NSLog(@"Some error happened during l8 initialization: %@", response);

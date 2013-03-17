@@ -367,4 +367,70 @@
      ];    
 }
 
+- (void)setMatrix:(NSArray *)colorMatrix withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:64];
+    for (int i = 0; i < colorMatrix.count; i++) {
+        NSArray *columns = [colorMatrix objectAtIndex:i];
+        for (int j = 0; j < columns.count; j++) {
+            NSString *ledKey = [NSString stringWithFormat:@"led%d%d", i, j];
+            UIColor *color = [columns objectAtIndex:j];
+            NSString *colorValue = [self printColor:color];
+            [params setObject:colorValue forKey:ledKey];
+        }
+    }
+    for (int i = 0; i < 8; i++) {
+        [params setObject:@"" forKey:[NSString stringWithFormat:@"frame%d", i]];
+        [params setObject:[NSNumber numberWithInt:0] forKey:[NSString stringWithFormat:@"frame%d_duration", i]];
+    }    
+    [self putPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@", [self l8Id]]]
+           params:params
+          success:success
+          failure:failure
+     ];
+}
+
+- (void)clearMatrixWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    NSMutableArray *colorMatrix = [NSMutableArray arrayWithCapacity:8];
+    for (int i = 0; i < 8; i++) {
+        [colorMatrix addObject:[NSMutableArray arrayWithCapacity:8]];
+        for (int j = 0; j < 8; j++) {
+            [[colorMatrix objectAtIndex:i] addObject:[UIColor blackColor]];
+        }
+    }
+    [self setMatrix:colorMatrix withSuccess:success failure:failure];
+}
+
+- (void)readMatrixWithSuccess:(L8ColorMatrixOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/led", [self l8Id]]]
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
+                     NSMutableArray *colorMatrix = [NSMutableArray arrayWithCapacity:8];
+                     for (int i = 0; i < 8; i++) {
+                         [colorMatrix addObject:[NSMutableArray arrayWithCapacity:8]];
+                         for (int j = 0; j < 8; j++) {
+                             
+                             NSString *ledKey = [NSString stringWithFormat:@"led%d%d", i, j];
+                             NSString *ledValue = [json objectForKey:ledKey];
+                             UIColor *ledColor = [UIColor colorWithString:ledValue];
+                             
+                             [[colorMatrix objectAtIndex:i] addObject:ledColor];
+                         }
+                     }
+                     if (success != nil) {
+                         success(colorMatrix);
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
+    
+}
+
 @end
