@@ -8,6 +8,38 @@
 
 #import "L8Sensor.h"
 
+@implementation L8SensorStatus
+
+@end
+
+@implementation L8FloatStatus 
+
+@end
+
+@implementation L8IntegerStatus
+
+@end
+
+@implementation L8TemperatureStatus
+
+@end
+
+@implementation L8AmbientLightStatus
+
+@end
+
+@implementation L8ProximityStatus
+
+@end
+
+@implementation L8NoiseStatus
+
+@end
+
+@implementation L8AccelerationStatus
+
+@end
+
 @implementation L8Sensor
 
 NSString *const kL8ProximitySensorName = @"proximity";

@@ -17,6 +17,7 @@ typedef void(^L8ColorOperationHandler)(UIColor *result);
 typedef void(^L8BooleanOperationHandler)(BOOL result);
 typedef void(^L8IntegerOperationHandler)(NSInteger result);
 typedef void(^L8VersionOperationHandler)(L8Version *result);
+typedef void(^L8SensorStatusOperationHandler)(L8SensorStatus *result);
 typedef void(^L8JSONOperationHandler)(NSMutableDictionary *result);
 
 typedef enum {
@@ -53,9 +54,7 @@ public Color[][] readMatrix() throws L8Exception;
 
 - (void)readSuperLEDWithSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
-/*
-public Sensor.Status readSensor(Sensor sensor) throws L8Exception;
-*/
+- (void)readSensorStatus:(L8Sensor *)sensor withSuccess:(L8SensorStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (void)enableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 

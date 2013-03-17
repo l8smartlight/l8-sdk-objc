@@ -10,6 +10,7 @@
 #import "AFHTTPClient.h"
 #import "AFJSONRequestOperation.h"
 #import "ColorUtils.h"
+#import "L8Sensor.h"
 
 #define SIMUL8TOR_BASE_URL @"http://192.168.1.165:8888"
 #define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
@@ -315,6 +316,55 @@
           success:success
           failure:failure
      ];
+}
+
+- (void)readSensorStatus:(L8Sensor *)sensor withSuccess:(L8SensorStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/sensor/%@", [self l8Id], sensor.name]]
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
+                     L8SensorStatus *result = nil;
+                     if ([sensor.name isEqualToString:[L8Sensor temperatureSensor].name]) {
+                         L8TemperatureStatus *status = [[L8TemperatureStatus alloc] init];
+                         status.celsiusValue = [[json objectForKey:[NSString stringWithFormat:@"%@_celsius_data", sensor.name]] floatValue];
+                         status.fahrenheitValue = [[json objectForKey:[NSString stringWithFormat:@"%@_fahrenheit_data", sensor.name]] floatValue];
+                         result = status;
+                     }
+                     if ([sensor.name isEqualToString:[L8Sensor accelerationSensor].name]) {
+                         L8AccelerationStatus *status = [[L8AccelerationStatus alloc] init];
+                         status.rawX = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_rawX", sensor.name]] floatValue];
+                         status.rawY = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_rawY", sensor.name]] floatValue];
+                         status.rawZ = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_rawZ", sensor.name]] floatValue];
+                         status.shake = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_shake", sensor.name]] integerValue];
+                         status.orientation = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_orientation", sensor.name]] integerValue];
+                         result = status;
+                     }
+                     if ([sensor.name isEqualToString:[L8Sensor ambientLightSensor].name]) {
+                         L8AmbientLightStatus *status = [[L8AmbientLightStatus alloc] init];
+                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
+                         result = status;
+                     }
+                     if ([sensor.name isEqualToString:[L8Sensor proximitySensor].name]) {
+                         L8AmbientLightStatus *status = [[L8AmbientLightStatus alloc] init];
+                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
+                         result = status;
+                     }
+                     if ([sensor.name isEqualToString:[L8Sensor noiseSensor].name]) {
+                         L8AmbientLightStatus *status = [[L8AmbientLightStatus alloc] init];
+                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
+                         result = status;                         
+                     }
+                     if (success != nil) {
+                         success(result);
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];    
 }
 
 @end

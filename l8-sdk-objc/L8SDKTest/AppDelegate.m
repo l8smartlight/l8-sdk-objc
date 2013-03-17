@@ -11,6 +11,7 @@
 #import "l8_sdk_objc.h"
 #import "ColorUtils.h"
 #import "RESTFulL8.h"
+#import "L8Sensor.h"
 
 @implementation AppDelegate
 
@@ -71,6 +72,25 @@
         
         [self.l8 disableSensor:[L8Sensor proximitySensor] withSuccess:v failure:f];
         [self.l8 enableSensor:[L8Sensor proximitySensor] withSuccess:v failure:f];
+        
+        [self.l8 readSensorStatus:[L8Sensor temperatureSensor]
+                      withSuccess:^(L8SensorStatus *result) {
+                          L8TemperatureStatus *status = (L8TemperatureStatus *)result;
+                          NSLog(@"temperature: %f %f", status.celsiusValue, status.fahrenheitValue);
+                      }
+                          failure:f];
+        [self.l8 readSensorStatus:[L8Sensor proximitySensor]
+                      withSuccess:^(L8SensorStatus *result) {
+                          L8ProximityStatus *status = (L8ProximityStatus *)result;
+                          NSLog(@"proximity: %d", status.value);
+                      }
+                          failure:f];
+        [self.l8 readSensorStatus:[L8Sensor accelerationSensor]
+                      withSuccess:^(L8SensorStatus *result) {
+                          L8AccelerationStatus *status = (L8AccelerationStatus *)result;
+                          NSLog(@"acceleration: %f %f %f %d %d", status.rawX, status.rawY, status.rawZ, status.shake, status.orientation); 
+                      }
+                          failure:f];
         
     };
     L8JSONOperationHandler failure = ^(NSMutableDictionary *response) {

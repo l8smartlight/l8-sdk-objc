@@ -10,7 +10,7 @@
 		606A199C16F5E3D500168B42 /* L8Version.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A199B16F5E3D500168B42 /* L8Version.m */; };
 		606A199F16F5E63A00168B42 /* L8Sensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A199E16F5E63A00168B42 /* L8Sensor.m */; };
 		60C8807616F5069B004C1844 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C8807516F5069B004C1844 /* Foundation.framework */; };
-		60C8807B16F5069B004C1844 /* l8_sdk_objc.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 60C8807A16F5069B004C1844 /* l8_sdk_objc.h */; };
+		60C8807B16F5069B004C1844 /* l8_sdk_objc.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 60C8807A16F5069B004C1844 /* l8_sdk_objc.h */; };
 		60C8807D16F5069B004C1844 /* l8_sdk_objc.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C8807C16F5069B004C1844 /* l8_sdk_objc.m */; };
 		60C8808716F508BA004C1844 /* RESTFulL8.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C8808616F508BA004C1844 /* RESTFulL8.m */; };
 		60C8808A16F509A3004C1844 /* USBL8.m in Sources */ = {isa = PBXBuildFile; fileRef = 60C8808916F509A3004C1844 /* USBL8.m */; };
@@ -49,14 +49,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		60C8807016F5069B004C1844 /* CopyFiles */ = {
+		60C8807016F5069B004C1844 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
-				60C8807B16F5069B004C1844 /* l8_sdk_objc.h in CopyFiles */,
+				60C8807B16F5069B004C1844 /* l8_sdk_objc.h in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -287,7 +288,7 @@
 			buildPhases = (
 				60C8806E16F5069B004C1844 /* Sources */,
 				60C8806F16F5069B004C1844 /* Frameworks */,
-				60C8807016F5069B004C1844 /* CopyFiles */,
+				60C8807016F5069B004C1844 /* Copy Files */,
 			);
 			buildRules = (
 			);
