@@ -71,6 +71,11 @@
     NSLog(@"Not implemented!");
 }
 
+- (void)readSensorsStatusWithSuccess:(L8SensorsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    NSLog(@"Not implemented!");
+}
+
 - (void)enableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
     NSLog(@"Not implemented!");

@@ -73,6 +73,12 @@
         
         [self.l8 disableSensor:[L8Sensor proximitySensor] withSuccess:v failure:f];
         [self.l8 enableSensor:[L8Sensor proximitySensor] withSuccess:v failure:f];
+
+        [self.l8 readSensorsStatusWithSuccess:^(NSArray *result) {
+                          NSLog(@"sensors %@", result);
+                      }
+                          failure:f];
+        
         
         [self.l8 readSensorStatus:[L8Sensor temperatureSensor]
                       withSuccess:^(L8SensorStatus *result) {

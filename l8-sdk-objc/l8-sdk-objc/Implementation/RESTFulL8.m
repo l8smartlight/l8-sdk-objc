@@ -17,7 +17,7 @@
 //#define PRODUCTION
 
 #ifdef DEVELOPMENT
-#define SIMUL8TOR_BASE_URL @"http://192.168.1.165:8888"
+#define SIMUL8TOR_BASE_URL @"http://192.168.1.33:8888"
 #define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
 #endif
 #ifdef PREPRODUCTION
@@ -356,12 +356,12 @@
                          result = status;
                      }
                      if ([sensor.name isEqualToString:[L8Sensor proximitySensor].name]) {
-                         L8AmbientLightStatus *status = [[L8AmbientLightStatus alloc] init];
+                         L8ProximityStatus *status = [[L8ProximityStatus alloc] init];
                          status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
                          result = status;
                      }
                      if ([sensor.name isEqualToString:[L8Sensor noiseSensor].name]) {
-                         L8AmbientLightStatus *status = [[L8AmbientLightStatus alloc] init];
+                         L8NoiseStatus *status = [[L8NoiseStatus alloc] init];
                          status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
                          result = status;                         
                      }
@@ -375,6 +375,52 @@
                      }
                  }
      ];    
+}
+
+- (void)readSensorsStatusWithSuccess:(L8SensorsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    [self.client getPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/sensor", [self l8Id]]]
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSMutableDictionary *json = (NSMutableDictionary *)responseObject;
+                     
+                     NSMutableArray *result = [NSMutableArray arrayWithCapacity:5];
+                     
+                     L8TemperatureStatus *temperatureStatus = [[L8TemperatureStatus alloc] init];
+                     temperatureStatus.celsiusValue = [[json objectForKey:@"temperature_celsius_data"] floatValue];
+                     temperatureStatus.fahrenheitValue = [[json objectForKey:@"temperature_fahrenheit_data"] floatValue];
+                     [result addObject:temperatureStatus];
+                     
+                     L8AccelerationStatus *accelerationStatus = [[L8AccelerationStatus alloc] init];
+                     accelerationStatus.rawX = [[json objectForKey:@"acceleration_sensor_data_rawX"] floatValue];
+                     accelerationStatus.rawY = [[json objectForKey:@"acceleration_sensor_data_rawY"] floatValue];
+                     accelerationStatus.rawZ = [[json objectForKey:@"acceleration_sensor_data_rawZ"] floatValue];
+                     accelerationStatus.shake = [[json objectForKey:@"acceleration_sensor_data_shake"] integerValue];
+                     accelerationStatus.orientation = [[json objectForKey:@"acceleration_sensor_data_orientation"] integerValue];
+                     [result addObject:accelerationStatus];
+                     
+                     L8AmbientLightStatus *ambientlightStatus = [[L8AmbientLightStatus alloc] init];
+                     ambientlightStatus.value = [[json objectForKey:@"ambientlight_data"] integerValue];
+                     [result addObject:ambientlightStatus];
+
+                     L8ProximityStatus *proximityStatus = [[L8ProximityStatus alloc] init];
+                     proximityStatus.value = [[json objectForKey:@"proximity_data"] integerValue];
+                     [result addObject:proximityStatus];
+                     
+                     L8NoiseStatus *noiseStatus = [[L8NoiseStatus alloc] init];
+                     noiseStatus.value = [[json objectForKey:@"noise_data"] integerValue];
+                     [result addObject:noiseStatus];
+                     
+                     if (success != nil) {
+                         success(result);
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
 }
 
 - (void)setMatrix:(NSArray *)colorMatrix withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure

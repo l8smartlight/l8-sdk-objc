@@ -20,6 +20,7 @@ typedef void(^L8BooleanOperationHandler)(BOOL result);
 typedef void(^L8IntegerOperationHandler)(NSInteger result);
 typedef void(^L8VersionOperationHandler)(L8Version *result);
 typedef void(^L8SensorStatusOperationHandler)(L8SensorStatus *result);
+typedef void(^L8SensorsStatusOperationHandler)(NSArray *result);
 typedef void(^L8JSONOperationHandler)(NSMutableDictionary *result);
 
 typedef enum {
@@ -55,6 +56,8 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 - (void)readSuperLEDWithSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (void)readSensorStatus:(L8Sensor *)sensor withSuccess:(L8SensorStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)readSensorsStatusWithSuccess:(L8SensorsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (void)enableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
