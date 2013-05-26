@@ -11,4 +11,8 @@
 
 @interface RESTFulL8 : NSObject <L8>
 
+- (void)createSimulatorWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)reconnectSimulator:(NSString *)simulatorId withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
 @end

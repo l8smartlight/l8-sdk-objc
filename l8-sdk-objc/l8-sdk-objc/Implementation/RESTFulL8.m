@@ -12,8 +12,8 @@
 #import "ColorUtils.h"
 #import "L8Sensor.h"
 
-//#define DEVELOPMENT
-#define PREPRODUCTION
+#define DEVELOPMENT
+//#define PREPRODUCTION
 //#define PRODUCTION
 
 #ifdef DEVELOPMENT
@@ -34,7 +34,7 @@
 
 @implementation RESTFulL8
 
-- (id)initWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+- (id)init
 {
     self = [super init];
     if (self) {
@@ -42,7 +42,6 @@
         [self.client registerHTTPOperationClass:[AFJSONRequestOperation class]];
         [self.client setDefaultHeader:@"Accept" value:@"application/json"];
         [self.client setParameterEncoding:AFJSONParameterEncoding];
-        [self createSimulatorWithSuccess:success failure:failure];
     }
     return self;
 }
@@ -530,6 +529,25 @@
           success:success
           failure:failure
      ];
+}
+
+- (void)reconnectSimulator:(NSString *)simulatorId withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    self.simul8torToken = simulatorId;
+    [self.client getPath:[self buildPath:[NSString stringWithFormat:@"/l8s/%@/ping", [self l8Id]]]
+              parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     if (success != nil) {
+                         success();
+                     }
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                     if (failure != nil) {
+                         failure([self createError:error]);
+                     }
+                 }
+     ];
+
 }
 
 @end

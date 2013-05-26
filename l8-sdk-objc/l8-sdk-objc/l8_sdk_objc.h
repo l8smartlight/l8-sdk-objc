@@ -13,6 +13,7 @@
 #import "L8Sensor.h"
 #import "L8Animation.h"
 
+typedef void(^L8DiscoverOperationHandler)(NSArray *result);
 typedef void(^L8VoidOperationHandler)();
 typedef void(^L8ColorOperationHandler)(UIColor *result);
 typedef void(^L8ColorMatrixOperationHandler)(NSArray *result);
@@ -32,8 +33,6 @@ typedef enum {
 extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 
 @protocol L8 <NSObject>
-
-- (id)initWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (L8ConnectionType)getConnectionType;
 
@@ -87,8 +86,10 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 
 @interface l8_sdk_objc : NSObject
 
-- (NSArray *)discoverL8sWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)discoverL8sWithSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
-- (id<L8>)createEmulatedL8WithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)createEmulatedL8WithSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)reconnectEmulatedL8:(NSString *)emulatedL8id withSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 @end

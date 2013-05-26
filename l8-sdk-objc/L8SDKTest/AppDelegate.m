@@ -21,7 +21,10 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    L8VoidOperationHandler success = ^() {
+    L8DiscoverOperationHandler success = ^(NSArray *result) {
+
+        self.l8 = [result objectAtIndex:0];
+        
         NSLog(@"Created L8 with id: %@ accesible at %@", [self.l8 l8Id], [self.l8 connectionURL]);
 
         L8VoidOperationHandler v = ^() {
@@ -161,7 +164,10 @@
     L8JSONOperationHandler failure = ^(NSMutableDictionary *response) {
         NSLog(@"Some error happened during l8 initialization: %@", response);
     };
-    self.l8 = [[RESTFulL8 alloc] initWithSuccess:success failure:failure];
+    
+    l8_sdk_objc *l8sdk = [[l8_sdk_objc alloc] init];
+    [l8sdk discoverL8sWithSuccess:success failure:failure];
+    //[l8sdk reconnectEmulatedL8:@"6617e520ba3ea081e20214d1ab8a641c" withSuccess:success failure:failure];
     return YES;
 }
 

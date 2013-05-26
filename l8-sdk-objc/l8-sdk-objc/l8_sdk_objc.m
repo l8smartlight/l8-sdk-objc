@@ -13,22 +13,52 @@
 
 NSInteger const kL8ErrorCodeColorNotInRGBSpace = 1020;
 
-- (NSArray *)discoverL8sWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+- (void)discoverL8sWithSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    NSMutableArray *foundL8s = [NSMutableArray arrayWithCapacity:3];
-    
-    // 1. Look for L8s connected via USB port
-    // 2. Look for L8s connected via bluetooth
-    // 3. If no L8s found, emulate a device with the RESTFul API.
-    if (foundL8s.count == 0) {
-        [foundL8s addObject:[self createEmulatedL8WithSuccess:success failure:failure]];
-    }
-    return foundL8s;
+    [self createEmulatedL8WithSuccess:^(NSArray *result) {
+        if (success != nil) {
+            success(result);
+        }
+    } failure:^(NSMutableDictionary *result) {
+        if (failure != nil) {
+            failure(result);
+        }
+    }];
 }
 
-- (id<L8>)createEmulatedL8WithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+- (void)createEmulatedL8WithSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    return [[RESTFulL8 alloc] initWithSuccess:success failure:failure];
+    RESTFulL8 *l8 = [[RESTFulL8 alloc] init];
+    [l8 createSimulatorWithSuccess:^{
+        if (success != nil) {
+            success([NSArray arrayWithObject:l8]);
+        }
+    } failure:^(NSMutableDictionary *result) {
+        if (failure != nil) {
+            failure(result);
+        }
+    }];
 }
 
+- (void)reconnectEmulatedL8:(NSString *)emulatedL8Id withSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    RESTFulL8 *l8 = [[RESTFulL8 alloc] init];
+    [l8 reconnectSimulator:emulatedL8Id withSuccess:^{
+        if (success != nil) {
+            success([NSArray arrayWithObject:l8]);
+        }
+    } failure:^(NSMutableDictionary *result) {
+        if (failure != nil) {
+            failure(result);
+        }
+    }];
+}
+
+/*
+public L8 reconnectDevice(String deviceId) throws L8Exception
+{
+    RESTfulL8 l8 = new RESTfulL8();
+    return l8.reconnectSimulator(deviceId);
+}
+*/
 @end
