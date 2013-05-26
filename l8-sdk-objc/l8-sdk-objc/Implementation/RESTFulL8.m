@@ -337,12 +337,14 @@
                      L8SensorStatus *result = nil;
                      if ([sensor.name isEqualToString:[L8Sensor temperatureSensor].name]) {
                          L8TemperatureStatus *status = [[L8TemperatureStatus alloc] init];
-                         status.celsiusValue = [[json objectForKey:[NSString stringWithFormat:@"%@_celsius_data", sensor.name]] floatValue];
-                         status.fahrenheitValue = [[json objectForKey:[NSString stringWithFormat:@"%@_fahrenheit_data", sensor.name]] floatValue];
+                         status.enabled = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_enabled", sensor.name]] boolValue];
+                         status.celsiusValue = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_celsius", sensor.name]] floatValue];
+                         status.fahrenheitValue = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_fahrenheit", sensor.name]] floatValue];
                          result = status;
                      }
                      if ([sensor.name isEqualToString:[L8Sensor accelerationSensor].name]) {
                          L8AccelerationStatus *status = [[L8AccelerationStatus alloc] init];
+                         status.enabled = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_enabled", sensor.name]] boolValue];
                          status.rawX = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_rawX", sensor.name]] floatValue];
                          status.rawY = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_rawY", sensor.name]] floatValue];
                          status.rawZ = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data_rawZ", sensor.name]] floatValue];
@@ -352,17 +354,20 @@
                      }
                      if ([sensor.name isEqualToString:[L8Sensor ambientLightSensor].name]) {
                          L8AmbientLightStatus *status = [[L8AmbientLightStatus alloc] init];
-                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
+                         status.enabled = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_enabled", sensor.name]] boolValue];
+                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data", sensor.name]] integerValue];
                          result = status;
                      }
                      if ([sensor.name isEqualToString:[L8Sensor proximitySensor].name]) {
                          L8ProximityStatus *status = [[L8ProximityStatus alloc] init];
-                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
+                         status.enabled = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_enabled", sensor.name]] boolValue];                         
+                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data", sensor.name]] integerValue];
                          result = status;
                      }
                      if ([sensor.name isEqualToString:[L8Sensor noiseSensor].name]) {
                          L8NoiseStatus *status = [[L8NoiseStatus alloc] init];
-                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_data", sensor.name]] integerValue];
+                         status.enabled = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_enabled", sensor.name]] boolValue];                         
+                         status.value = [[json objectForKey:[NSString stringWithFormat:@"%@_sensor_data", sensor.name]] integerValue];
                          result = status;                         
                      }
                      if (success != nil) {
@@ -387,11 +392,13 @@
                      NSMutableArray *result = [NSMutableArray arrayWithCapacity:5];
                      
                      L8TemperatureStatus *temperatureStatus = [[L8TemperatureStatus alloc] init];
-                     temperatureStatus.celsiusValue = [[json objectForKey:@"temperature_celsius_data"] floatValue];
-                     temperatureStatus.fahrenheitValue = [[json objectForKey:@"temperature_fahrenheit_data"] floatValue];
+                     temperatureStatus.enabled = [[json objectForKey:@"temperature_sensor_enabled"] integerValue] == 1;
+                     temperatureStatus.celsiusValue = [[json objectForKey:@"temperature_sensor_data_celsius"] floatValue];
+                     temperatureStatus.fahrenheitValue = [[json objectForKey:@"temperature_sensor_data_fahrenheit"] floatValue];
                      [result addObject:temperatureStatus];
                      
                      L8AccelerationStatus *accelerationStatus = [[L8AccelerationStatus alloc] init];
+                     accelerationStatus.enabled = [[json objectForKey:@"acceleration_sensor_enabled"] boolValue];
                      accelerationStatus.rawX = [[json objectForKey:@"acceleration_sensor_data_rawX"] floatValue];
                      accelerationStatus.rawY = [[json objectForKey:@"acceleration_sensor_data_rawY"] floatValue];
                      accelerationStatus.rawZ = [[json objectForKey:@"acceleration_sensor_data_rawZ"] floatValue];
@@ -400,15 +407,18 @@
                      [result addObject:accelerationStatus];
                      
                      L8AmbientLightStatus *ambientlightStatus = [[L8AmbientLightStatus alloc] init];
-                     ambientlightStatus.value = [[json objectForKey:@"ambientlight_data"] integerValue];
+                     ambientlightStatus.enabled = [[json objectForKey:@"ambientlight_sensor_enabled"] boolValue];
+                     ambientlightStatus.value = [[json objectForKey:@"ambientlight_sensor_data"] integerValue];
                      [result addObject:ambientlightStatus];
 
                      L8ProximityStatus *proximityStatus = [[L8ProximityStatus alloc] init];
-                     proximityStatus.value = [[json objectForKey:@"proximity_data"] integerValue];
+                     proximityStatus.enabled = [[json objectForKey:@"proximity_sensor_enabled"] boolValue];
+                     proximityStatus.value = [[json objectForKey:@"proximity_sensor_data"] integerValue];
                      [result addObject:proximityStatus];
                      
                      L8NoiseStatus *noiseStatus = [[L8NoiseStatus alloc] init];
-                     noiseStatus.value = [[json objectForKey:@"noise_data"] integerValue];
+                     noiseStatus.enabled = [[json objectForKey:@"noise_sensor_enabled"] boolValue];
+                     noiseStatus.value = [[json objectForKey:@"noise_sensor_data"] integerValue];
                      [result addObject:noiseStatus];
                      
                      if (success != nil) {

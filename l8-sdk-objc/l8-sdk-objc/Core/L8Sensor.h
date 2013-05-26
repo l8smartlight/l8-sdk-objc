@@ -11,6 +11,8 @@
 
 @interface L8SensorStatus : NSObject
 
+@property (nonatomic) bool enabled;
+
 @end
 
 @interface L8FloatStatus : L8SensorStatus

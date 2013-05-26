@@ -14,13 +14,28 @@
 
 @implementation L8FloatStatus 
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"enabled: %@ {%f}", self.enabled? @"true" : @"false", self.value];
+}
+
 @end
 
 @implementation L8IntegerStatus
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"enabled: %@ {%d}", self.enabled? @"true" : @"false", self.value];
+}
+
 @end
 
 @implementation L8TemperatureStatus
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"enabled: %@ {%f celsius, %f fahrenheit}", self.enabled? @"true" : @"false", self.celsiusValue, self.fahrenheitValue];
+}
 
 @end
 
@@ -37,6 +52,19 @@
 @end
 
 @implementation L8AccelerationStatus
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"enabled: %@ {%f rawX, %f rawY, %f rawZ, %d shake, %d orientation}",
+                self.enabled? @"true" : @"false",
+                self.rawX,
+                self.rawY,
+                self.rawZ,
+                self.shake,
+                self.orientation
+    ];
+}
+
 
 @end
 
