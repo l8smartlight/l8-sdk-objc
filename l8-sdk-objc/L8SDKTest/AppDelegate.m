@@ -165,9 +165,9 @@
         NSLog(@"Some error happened during l8 initialization: %@", response);
     };
     
-    l8_sdk_objc *l8sdk = [[l8_sdk_objc alloc] init];
-    [l8sdk discoverL8sWithSuccess:success failure:failure];
-    //[l8sdk reconnectEmulatedL8:@"6617e520ba3ea081e20214d1ab8a641c" withSuccess:success failure:failure];
+    L8Manager *l8Manager = [[L8Manager alloc] init];
+    [l8Manager discoverL8sWithSuccess:success failure:failure];
+    //[l8Manager reconnectEmulatedL8:@"6617e520ba3ea081e20214d1ab8a641c" withSuccess:success failure:failure];
     return YES;
 }
 

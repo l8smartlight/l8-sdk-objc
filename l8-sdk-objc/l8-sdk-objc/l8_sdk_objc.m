@@ -9,7 +9,7 @@
 #import "l8_sdk_objc.h"
 #import "RESTFulL8.h"
 
-@implementation l8_sdk_objc
+@implementation L8Manager
 
 NSInteger const kL8ErrorCodeColorNotInRGBSpace = 1020;
 
@@ -54,11 +54,4 @@ NSInteger const kL8ErrorCodeColorNotInRGBSpace = 1020;
     }];
 }
 
-/*
-public L8 reconnectDevice(String deviceId) throws L8Exception
-{
-    RESTfulL8 l8 = new RESTfulL8();
-    return l8.reconnectSimulator(deviceId);
-}
-*/
 @end

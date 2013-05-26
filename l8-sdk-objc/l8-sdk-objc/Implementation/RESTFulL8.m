@@ -12,8 +12,8 @@
 #import "ColorUtils.h"
 #import "L8Sensor.h"
 
-#define DEVELOPMENT
-//#define PREPRODUCTION
+//#define DEVELOPMENT
+#define PREPRODUCTION
 //#define PRODUCTION
 
 #ifdef DEVELOPMENT

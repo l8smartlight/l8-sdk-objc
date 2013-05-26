@@ -84,7 +84,7 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 
 @end
 
-@interface l8_sdk_objc : NSObject
+@interface L8Manager : NSObject
 
 - (void)discoverL8sWithSuccess:(L8DiscoverOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
