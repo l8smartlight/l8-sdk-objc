@@ -21,7 +21,8 @@
 #define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
 #endif
 #ifdef PREPRODUCTION
-#define SIMUL8TOR_BASE_URL @"http://54.228.218.122"
+//#define SIMUL8TOR_BASE_URL @"http://54.228.218.122"
+#define SIMUL8TOR_BASE_URL @"http://l8pre.develappers.es"
 #define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
 #endif
 
