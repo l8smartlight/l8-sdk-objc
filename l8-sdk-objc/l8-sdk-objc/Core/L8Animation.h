@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) NSMutableArray *colorMatrix;
 @property (nonatomic) NSInteger duration;
+@property (strong, nonatomic) UIColor *backLed;
 
 @end
 
