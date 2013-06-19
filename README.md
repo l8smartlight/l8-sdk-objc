@@ -1,4 +1,4 @@
-l8 smartLight objc SDK
+l8 smartlight objc SDK
 ===========
 
 http://www.l8smartlight.com/sdk/
