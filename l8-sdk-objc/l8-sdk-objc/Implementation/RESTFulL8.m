@@ -11,6 +11,7 @@
 #import "AFJSONRequestOperation.h"
 #import "ColorUtils.h"
 #import "L8Sensor.h"
+#import "CommonUtil.h"
 
 //#define DEVELOPMENT
 #define PREPRODUCTION
@@ -49,6 +50,7 @@
 
 - (NSString *)buildPath:(NSString *)path
 {
+    NSLog(@"%@",[NSString stringWithFormat:@"%@%@", SIMUL8TOR_BASE_PATH, path]);
     return [NSString stringWithFormat:@"%@%@", SIMUL8TOR_BASE_PATH, path];
 }
 
@@ -435,9 +437,20 @@
 
 - (void)setMatrix:(NSArray *)colorMatrix withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
+    NSMutableArray *matrix=[[NSMutableArray alloc]init];;
+    for (int i=0; i<8; i++) {
+        NSMutableArray *column=[[NSMutableArray alloc] init];
+        for (int j=0; j<8; j++) {
+            int outVal;
+            NSScanner* scanner = [NSScanner scannerWithString:[NSString stringWithFormat:@"0x%@",[colorMatrix objectAtIndex:i*8+j]]];
+            [scanner scanHexInt:(unsigned *)&outVal];
+            [column addObject:UIColorFromRGB(outVal)];
+        }
+        [matrix addObject:column];
+    }
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:64];
-    for (int i = 0; i < colorMatrix.count; i++) {
-        NSArray *columns = [colorMatrix objectAtIndex:i];
+    for (int i = 0; i < matrix.count; i++) {
+        NSArray *columns = [matrix objectAtIndex:i];
         for (int j = 0; j < columns.count; j++) {
             NSString *ledKey = [NSString stringWithFormat:@"led%d%d", i, j];
             UIColor *color = [columns objectAtIndex:j];

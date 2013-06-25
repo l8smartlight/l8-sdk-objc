@@ -12,12 +12,12 @@
 
 @property (strong, nonatomic) NSMutableArray *colorMatrix;
 @property (nonatomic) NSInteger duration;
-@property (strong, nonatomic) UIColor *backLed;
 
 @end
 
 @interface L8Animation : NSObject
 
 @property (strong, nonatomic) NSMutableArray *frames;
+@property (nonatomic,strong) NSMutableArray *frameStrings;
 
 @end
