@@ -15,6 +15,7 @@
 @protocol TIBLECBKeyfobDelegate 
 @optional
 -(void) keyfobReady;
+-(void) connectToL8;
 @required
 -(void) accelerometerValuesUpdated:(char)x y:(char)y z:(char)z;
 -(void) keyValuesUpdated:(char)sw;

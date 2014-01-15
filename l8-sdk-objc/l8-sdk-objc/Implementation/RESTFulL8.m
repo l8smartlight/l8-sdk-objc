@@ -13,24 +13,12 @@
 #import "L8Sensor.h"
 #import "CommonUtil.h"
 
-//#define DEVELOPMENT
-#define PREPRODUCTION
-//#define PRODUCTION
 
-#ifdef DEVELOPMENT
-#define SIMUL8TOR_BASE_URL @"http://192.168.1.33:8888"
-#define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
-#endif
-#ifdef PREPRODUCTION
-//#define SIMUL8TOR_BASE_URL @"http://54.228.218.122"
-#define SIMUL8TOR_BASE_URL @"http://l8pre.develappers.es"
-#define SIMUL8TOR_BASE_PATH @"/l8-server-simulator"
-#endif
 
 @interface RESTFulL8()
 
 @property (strong, nonatomic) AFHTTPClient *client;
-@property (strong, nonatomic) NSString *simul8torToken;
+
 
 @end
 

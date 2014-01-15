@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		164DAA6C1886B95200BEC8A9 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 164DAA6B1886B95200BEC8A9 /* CommonUtil.m */; };
 		606A199C16F5E3D500168B42 /* L8Version.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A199B16F5E3D500168B42 /* L8Version.m */; };
 		606A199F16F5E63A00168B42 /* L8Sensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A199E16F5E63A00168B42 /* L8Sensor.m */; };
 		606A19A316F5FC8700168B42 /* L8Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = 606A19A216F5FC8700168B42 /* L8Animation.m */; };
@@ -64,6 +65,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		164DAA6A1886B95200BEC8A9 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
+		164DAA6B1886B95200BEC8A9 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
+		164DAA6D1886B9BA00BEC8A9 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		606A199A16F5E3D500168B42 /* L8Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = L8Version.h; sourceTree = "<group>"; };
 		606A199B16F5E3D500168B42 /* L8Version.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = L8Version.m; sourceTree = "<group>"; };
 		606A199D16F5E63A00168B42 /* L8Sensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = L8Sensor.h; sourceTree = "<group>"; };
@@ -140,6 +144,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		164DAA691886B95200BEC8A9 /* CommonUtil */ = {
+			isa = PBXGroup;
+			children = (
+				164DAA6A1886B95200BEC8A9 /* CommonUtil.h */,
+				164DAA6B1886B95200BEC8A9 /* CommonUtil.m */,
+			);
+			path = CommonUtil;
+			sourceTree = "<group>";
+		};
 		60C8806916F5069B004C1844 = {
 			isa = PBXGroup;
 			children = (
@@ -178,6 +191,7 @@
 				60C8808416F50892004C1844 /* Implementation */,
 				60C8807A16F5069B004C1844 /* l8_sdk_objc.h */,
 				60C8807C16F5069B004C1844 /* l8_sdk_objc.m */,
+				164DAA6D1886B9BA00BEC8A9 /* Constants.h */,
 			);
 			path = "l8-sdk-objc";
 			sourceTree = "<group>";
@@ -243,6 +257,7 @@
 		60C880AE16F50FD1004C1844 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				164DAA691886B95200BEC8A9 /* CommonUtil */,
 				60C880D616F5375F004C1844 /* ColorUtils */,
 				60C880AF16F50FED004C1844 /* AFNetworking */,
 			);
@@ -395,6 +410,7 @@
 				60C880A316F50AC9004C1844 /* AppDelegate.m in Sources */,
 				60C880C416F50FED004C1844 /* AFHTTPClient.m in Sources */,
 				60C880C616F50FED004C1844 /* AFHTTPRequestOperation.m in Sources */,
+				164DAA6C1886B95200BEC8A9 /* CommonUtil.m in Sources */,
 				60C880C816F50FED004C1844 /* AFImageRequestOperation.m in Sources */,
 				60C880CA16F50FED004C1844 /* AFJSONRequestOperation.m in Sources */,
 				60C880CC16F50FED004C1844 /* AFNetworkActivityIndicatorManager.m in Sources */,

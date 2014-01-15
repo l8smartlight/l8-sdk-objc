@@ -18,12 +18,12 @@
 //Set LED Matrix color CMD
 #define L8SL_CMD_SET_LED_MATRIX_COLOR_HDR_LEN                   4
 static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_HDR[]        = {0xAA, 0x55, 0x81, 0x44};
-static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_RED_VAL[2]   = {0x00, 0x0f};
-static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_RED_CRC      = 0x81;
-static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_GREEN_VAL[2] = {0x00, 0xf0};
-static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_GREEN_CRC    = 0xd7;
-static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_BLUE_VAL[2]  = {0x0f, 0x00};
-static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_BLUE_CRC     = 0xac;
+//static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_RED_VAL[2]   = {0x00, 0x0f};
+//static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_RED_CRC      = 0x81;
+//static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_GREEN_VAL[2] = {0x00, 0xf0};
+//static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_GREEN_CRC    = 0xd7;
+//static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_BLUE_VAL[2]  = {0x0f, 0x00};
+//static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_BLUE_CRC     = 0xac;
 
 //Clear LED Matrix color CMD
 #define L8SL_CMD_SET_LED_MATRIX_COLOR_NONE_HDR_LEN              4
@@ -32,15 +32,15 @@ static unsigned char L8SL_CMD_SET_LED_MATRIX_COLOR_NONE_CRC     = 0xDC;
 
 //Set BACK LED color CMD
 #define L8SL_CMD_SET_BACK_LED_COLOR_HDR_LEN                     6
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_HDR[]          = {0xAA, 0x55, 0x06, 0x43, 0x0A, 0x0D};
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_RED_VAL[3]     = {0x00, 0x00, 0x0F};
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_RED_CRC        = 0x03;
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_GREEN_VAL[3]   = {0x00, 0x0F, 0x00};
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_GREEN_CRC      = 0xed;
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_BLUE_VAL[3]    = {0x0F, 0x00, 0x00};
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_BLUE_CRC       = 0x69;
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_NONE_VAL[3]    = {0x00, 0x00, 0x00};
-static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_NONE_CRC       = 0x2e;
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_HDR[]          = {0xAA, 0x55, 0x06, 0x43, 0x0A, 0x0D};
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_RED_VAL[3]     = {0x00, 0x00, 0x0F};
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_RED_CRC        = 0x03;
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_GREEN_VAL[3]   = {0x00, 0x0F, 0x00};
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_GREEN_CRC      = 0xed;
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_BLUE_VAL[3]    = {0x0F, 0x00, 0x00};
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_BLUE_CRC       = 0x69;
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_NONE_VAL[3]    = {0x00, 0x00, 0x00};
+//static unsigned char L8SL_CMD_SET_BACK_LED_COLOR_NONE_CRC       = 0x2e;
 
 //-------------------
 #define L8SL_PKT_START_LEN                                                  2
@@ -51,19 +51,19 @@ static unsigned char L8SL_PKT_START[L8SL_PKT_START_LEN]                     = {0
 #define L8SL_L8_STORE_FRAME_LEN                                             1
 static unsigned char L8SL_L8_STORE_FRAME[L8SL_L8_STORE_FRAME_LEN]           = {0x70};
 #define L8SL_L8_STORE_ANIM_LEN                                              1
-static unsigned char L8SL_L8_STORE_ANIM[L8SL_L8_STORE_ANIM_LEN]             = {0x77};
+//static unsigned char L8SL_L8_STORE_ANIM[L8SL_L8_STORE_ANIM_LEN]             = {0x77};
 #define L8SL_CMD_SETLEDMTRX_LEN                                             1
 static unsigned char L8SL_CMD_SETLEDMTRX[L8SL_CMD_SETLEDMTRX_LEN]           = {0x44};
 #define L8SL_CMD_APP_STOP_LEN                                               1
-static unsigned char L8SL_CMD_APP_STOP[L8SL_CMD_APP_STOP_LEN]               = {0x45};
+//static unsigned char L8SL_CMD_APP_STOP[L8SL_CMD_APP_STOP_LEN]               = {0x45};
 #define L8SL_CMD_SETBACKLED_LEN                                             1
 static unsigned char L8SL_CMD_SETBACKLED[L8SL_CMD_SETBACKLED_LEN]           = {0x4B};
 #define L8SL_CMD_APP_START_LEN                                              1
-static unsigned char L8SL_CMD_APP_START[L8SL_CMD_APP_START_LEN]             = {0x81};
+//static unsigned char L8SL_CMD_APP_START[L8SL_CMD_APP_START_LEN]             = {0x81};
 #define L8SL_CMD_CLEARLEDMTRX_LEN                                           1
-static unsigned char L8SL_CMD_CLEARLEDMTRX[L8SL_CMD_CLEARLEDMTRX_LEN]       = {0x82};
+//static unsigned char L8SL_CMD_CLEARLEDMTRX[L8SL_CMD_CLEARLEDMTRX_LEN]       = {0x82};
 #define L8SL_CMD_SETTEXT_LEN                                                1
-static unsigned char L8SL_CMD_SETTEXT[L8SL_CMD_SETTEXT_LEN]                 = {0x83};
+//static unsigned char L8SL_CMD_SETTEXT[L8SL_CMD_SETTEXT_LEN]                 = {0x83};
 
 //-------------------
 
@@ -328,51 +328,114 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
     NSLog(@"Not implemented!");
 }
 
-//- (void)readSensorsStatusWithSuccess:(L8SensorsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
-//{
-//    NSLog(@"Not implemented!");
-//}
-
 - (void)readSensorsStatusWithSuccess:(L8SensorsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
 
      NSMutableDictionary *json = [[NSMutableDictionary alloc] init];
      
      NSMutableArray *result = [NSMutableArray arrayWithCapacity:5];
-     
-     L8TemperatureStatus *temperatureStatus = [[L8TemperatureStatus alloc] init];
-     temperatureStatus.enabled = [[json objectForKey:@"temperature_sensor_enabled"] integerValue] == 1;
-     temperatureStatus.celsiusValue = [[json objectForKey:@"temperature_sensor_data_celsius"] floatValue];
-     temperatureStatus.fahrenheitValue = [[json objectForKey:@"temperature_sensor_data_fahrenheit"] floatValue];
-     [result addObject:temperatureStatus];
-     
-     L8AccelerationStatus *accelerationStatus = [[L8AccelerationStatus alloc] init];
-     accelerationStatus.enabled = [[json objectForKey:@"acceleration_sensor_enabled"] boolValue];
-     accelerationStatus.rawX = [[json objectForKey:@"acceleration_sensor_data_rawX"] floatValue];
-     accelerationStatus.rawY = [[json objectForKey:@"acceleration_sensor_data_rawY"] floatValue];
-     accelerationStatus.rawZ = [[json objectForKey:@"acceleration_sensor_data_rawZ"] floatValue];
-     accelerationStatus.shake = [[json objectForKey:@"acceleration_sensor_data_shake"] integerValue];
-     accelerationStatus.orientation = [[json objectForKey:@"acceleration_sensor_data_orientation"] integerValue];
-     [result addObject:accelerationStatus];
-     
-     L8AmbientLightStatus *ambientlightStatus = [[L8AmbientLightStatus alloc] init];
-     ambientlightStatus.enabled = [[json objectForKey:@"ambientlight_sensor_enabled"] boolValue];
-     ambientlightStatus.value = [[json objectForKey:@"ambientlight_sensor_data"] integerValue];
-     [result addObject:ambientlightStatus];
-     
-     L8ProximityStatus *proximityStatus = [[L8ProximityStatus alloc] init];
-     proximityStatus.enabled = [[json objectForKey:@"proximity_sensor_enabled"] boolValue];
-     proximityStatus.value = [[json objectForKey:@"proximity_sensor_data"] integerValue];
-     [result addObject:proximityStatus];
-     
-     L8NoiseStatus *noiseStatus = [[L8NoiseStatus alloc] init];
-     noiseStatus.enabled = [[json objectForKey:@"noise_sensor_enabled"] boolValue];
-     noiseStatus.value = [[json objectForKey:@"noise_sensor_data"] integerValue];
-     [result addObject:noiseStatus];
-     
-     if (success != nil) {
-         success(result);
-     }
+
+    L8TemperatureStatus *temperatureStatus = [[L8TemperatureStatus alloc] init];
+    temperatureStatus.enabled = [[json objectForKey:@"temperature_sensor_enabled"] integerValue] == 1;
+    temperatureStatus.celsiusValue = [[json objectForKey:@"temperature_sensor_data_celsius"] floatValue];
+    temperatureStatus.fahrenheitValue = [[json objectForKey:@"temperature_sensor_data_fahrenheit"] floatValue];
+    [result addObject:temperatureStatus];
+
+    L8AccelerationStatus *accelerationStatus = [[L8AccelerationStatus alloc] init];
+    accelerationStatus.enabled = [[json objectForKey:@"acceleration_sensor_enabled"] boolValue];
+    accelerationStatus.rawX = [[json objectForKey:@"acceleration_sensor_data_rawX"] floatValue];
+    accelerationStatus.rawY = [[json objectForKey:@"acceleration_sensor_data_rawY"] floatValue];
+    accelerationStatus.rawZ = [[json objectForKey:@"acceleration_sensor_data_rawZ"] floatValue];
+    accelerationStatus.shake = [[json objectForKey:@"acceleration_sensor_data_shake"] integerValue];
+    accelerationStatus.orientation = [[json objectForKey:@"acceleration_sensor_data_orientation"] integerValue];
+    [result addObject:accelerationStatus];
+
+    L8AmbientLightStatus *ambientlightStatus = [[L8AmbientLightStatus alloc] init];
+    ambientlightStatus.enabled = [[json objectForKey:@"ambientlight_sensor_enabled"] boolValue];
+    ambientlightStatus.value = [[json objectForKey:@"ambientlight_sensor_data"] integerValue];
+    [result addObject:ambientlightStatus];
+
+    L8ProximityStatus *proximityStatus = [[L8ProximityStatus alloc] init];
+    proximityStatus.enabled = [[json objectForKey:@"proximity_sensor_enabled"] boolValue];
+    proximityStatus.value = [[json objectForKey:@"proximity_sensor_data"] integerValue];
+    [result addObject:proximityStatus];
+
+    L8NoiseStatus *noiseStatus = [[L8NoiseStatus alloc] init];
+    noiseStatus.enabled = [[json objectForKey:@"noise_sensor_enabled"] boolValue];
+    noiseStatus.value = [[json objectForKey:@"noise_sensor_data"] integerValue];
+    [result addObject:noiseStatus];
+    [self microQuery];
+    [self proximityQuery];
+    [self ambientQuery];
+    [self accelerationQuery];
+    [self temperatureQuery];
+    if (success != nil) {
+     success(result);
+    }
+    
+}
+
+#pragma mark - sensors methods
+
+-(void) microQuery{
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x64,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+-(void) proximityQuery{
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x52,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+-(void) ambientQuery{
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x50,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+
+-(void) accelerationQuery{
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x4C,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+-(void) temperatureQuery{
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x48,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
 }
 
 - (void)enableSensor:(L8Sensor *)sensor withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
@@ -397,7 +460,16 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
 
 - (void)readBatteryStatusWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    NSLog(@"Not implemented!");
+    //NSLog(@"Not implemented!");
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x46,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
 }
 
 - (void)readButtonWithSuccess:(L8IntegerOperationHandler)success failure:(L8JSONOperationHandler)failure
@@ -428,10 +500,8 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
 
 - (void)setAnimation:(L8Animation *)animation withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    
-    
     [self clearMatrixWithSuccess:^{
-        NSLog(@"Matrix cleared")
+        NSLog(@"Matrix cleared");
     } failure:^(NSMutableDictionary *result) {
         NSLog(@"Error!! Matrix is not cleared");
     }];
@@ -548,93 +618,10 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
             //
             [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral] ];
             [self.t L8SL_SendData:Cmd2 toL8SL:[self.t activePeripheral] ];
-            sleep(0.7);
+            sleep(([(L8Frame*)[animation.frames objectAtIndex:k] duration]/1000.0));
         }
         
     });
-    
-//    NSLog(@"%@",animation.frameStrings);
-//    NSString *text=@"Hello World";
-//    BOOL loop=YES;
-//    int speed=5;
-//    UIColor *color=[UIColor redColor];
-//    int DataBytes_Len = L8SL_PKT_START_LEN +
-//    L8SL_PKT_LENGHT_LEN +
-//    L8SL_CMD_SETTEXT_LEN +
-//    5 +                         //1-Loop/1-Speed/3-RGB text color
-//    text.length +
-//    L8SL_CMD_CRC_LEN;
-//    
-//    unsigned char DataBytes[DataBytes_Len];
-//    int j = 0;
-//    for (int i = 0; i < L8SL_PKT_START_LEN; i++,j++)
-//    {//Pkt start
-//        DataBytes[j]    = L8SL_PKT_START[i];
-//    }
-//    for (int i = 0; i < L8SL_PKT_LENGHT_LEN; i++,j++)
-//    {//DataLen reset
-//        DataBytes[j]    = 0;
-//    }
-//    for (int i = 0; i < L8SL_CMD_SETTEXT_LEN; i++,j++)
-//    {//Cmd field
-//        DataBytes[j]    = L8SL_CMD_SETTEXT[i];
-//    }
-//    
-//    for (int i = 0; i < 1; i++,j++)
-//    {//Loop field
-//        DataBytes[j]    = (loop? 0x01 : 0x00);
-//        
-//        DataBytes[2]    += 1; //Packet payload length
-//    }
-//    for (int i = 0; i < 1; i++,j++)
-//    {//Speed field
-//        DataBytes[j]    = (UInt8)speed;
-//        
-//        DataBytes[2]    += 1; //Packet payload length
-//    }
-//    
-//    CGFloat RGBf[3];
-//    [self getRGBComponents:RGBf forColor:color];
-//    
-//    for (int i = 0; i < 3; i++,j++)
-//    {//Color field
-//        DataBytes[j]    =  ((UInt8)RGBf[i]) >> 4; //[3-i-1];
-//        
-//        DataBytes[2]    += 1; //Packet payload length
-//    }
-//    
-//    const char* TxtBytes = [text UTF8String];
-//    
-//    for (int i = 0; i < text.length; i++,j++)
-//    {//Text
-//        DataBytes[j]    = TxtBytes[i];
-//        
-//        DataBytes[2]    += 1; //Packet payload length
-//    }
-//    {//CRC
-//        DataBytes[j]    = crc8(&DataBytes[3],DataBytes_Len-4);
-//        
-//        DataBytes[2]    += 1; //Packet payload length
-//    }
-//    
-//    
-//    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)DataBytes length:DataBytes_Len];
-//    
-//    
-//    NSString* CmdStr = HexEncoding_BytesToString(Cmd);
-//    for (int i = 0; i < CmdStr.length / (16*2)+1; i++)
-//    {
-//        int len = CmdStr.length - (i*16*2);
-//        if (len > 32)
-//            len = 32;
-//        
-//        NSRange rng = NSMakeRange(i*16*2, len);
-//        printf("%s\n", [[CmdStr substringWithRange:rng ] UTF8String]);
-//    }
-//    
-//    
-//    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral] withSuccess:success failure:failure];
-    
 }
 
 - (NSString *)connectionURL
@@ -725,14 +712,21 @@ unsigned char strToChar (char a, char b)
     NSString* DataStr = string;
     //DataStr = [DataStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
     
+    //Las siguientes lineas cogen los 6 caracteres del color exadecimal y lo dejan en un color de 16 bits
+    DataStr =[DataStr substringFromIndex:(DataStr.length-6)];
+    DataStr= [NSString stringWithFormat:@"0%c0%c0%c", [DataStr characterAtIndex:4],[DataStr characterAtIndex:2],[DataStr characterAtIndex:0]];
+    //en la ultima linea se cambia el orden de los colores para pasarlo en formato BGR
+    
     int dis = 0;
-    NSData* Data = HexEncoding_StringToBytes([DataStr substringFromIndex:(DataStr.length-6)], &dis);
+    
+    //NSData* Data = HexEncoding_StringToBytes([DataStr substringFromIndex:(DataStr.length-6)], &dis);
+    NSData* Data = HexEncoding_StringToBytes(DataStr, &dis);
     
     //Coger los ultimos 3 bytes (6 nibbles) y devolverlos en un NSData. Si 000000 devolver 0f0000.
     unsigned char BckLEDBytes[3];
     [Data getBytes:BckLEDBytes];
     if ((BckLEDBytes[0] == 0) && (BckLEDBytes[1] == 0) && (BckLEDBytes[2] == 0))
-        BckLEDBytes[0] = 0x0f;
+        BckLEDBytes[0] = 0x00;
     
     return [NSData dataWithBytes:BckLEDBytes length:3];
 }

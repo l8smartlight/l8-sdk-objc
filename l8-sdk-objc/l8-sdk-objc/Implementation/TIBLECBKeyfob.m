@@ -32,15 +32,18 @@
 //Habilitar notificaciones TX ... REVISAR!!! ¿Sumar +1 a UUIDs??
 -(void) L8SL_EnableTXNotif:(CBPeripheral *)p
 {
+    //logmethod();
     [self notification:L8SL_SPPLE_SERVICE_UUID_BYTES characteristicUUID:L8SL_SPPLE_TX_CHARACTERISTIC_UUID_BYTES p:p on:YES];
 }
 -(void) L8SL_DisableTXNotif:(CBPeripheral *)p
 {
+    //logmethod();
     [self notification:L8SL_SPPLE_SERVICE_UUID_BYTES characteristicUUID:L8SL_SPPLE_TX_CHARACTERISTIC_UUID_BYTES p:p on:NO];
 }
 
 -(void) L8SL_RequestTXCredits:(NSUInteger)credits toL8SL:(CBPeripheral *)p
 {
+    //logmethod();
     //Convertir int to NSData (2 bytes) 
     char Credits[2] = {0xff, 0xff};    //65536 creditos. De momento, pasamos de los credits que nos piden
     NSData *CreditsData = [[NSData alloc] initWithBytes:Credits length:2];
@@ -49,6 +52,7 @@
 
 -(void) L8SL_RequestRXCredits:(NSUInteger)credits toL8SL:(CBPeripheral *)p
 {
+    //logmethod();
     //Convertir int to NSData (2 bytes)
     char Credits[2] = {0xff, 0xff};    //256 creditos. De momento, pasamos de los credits que nos piden
     NSData *CreditsData = [[NSData alloc] initWithBytes:Credits length:2];
@@ -60,12 +64,14 @@
 //Pide creditos de caracteristica RX y escribe los datos
 -(void) L8SL_SendData:(NSData*)data toL8SL:(CBPeripheral*)p
 {
+    //logmethod();
     [self L8SL_RequestRXCredits:data.length toL8SL:p]; //Quiza aquí si habria que pedir confirmación de envío...
     [self writeValue:L8SL_SPPLE_SERVICE_UUID_BYTES characteristicUUID:L8SL_SPPLE_RX_CHARACTERISTIC_UUID_BYTES p:p data:data];
 }
 
 -(void) L8SL_SendData:(NSData*)data toL8SL:(CBPeripheral*)p withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
+    //logmethod();
     [self L8SL_RequestRXCredits:data.length toL8SL:p]; //Quiza aquí si habria que pedir confirmación de envío...
     [self writeValue:L8SL_SPPLE_SERVICE_UUID_BYTES
   characteristicUUID:L8SL_SPPLE_RX_CHARACTERISTIC_UUID_BYTES
@@ -79,24 +85,11 @@
 //Pide creditos de sobra de caracteristica TX y habilita notificación TX
 -(void) L8SL_PrepareForReceiveDataFromL8SL:(CBPeripheral *)p
 {
+    //logmethod();
     NSUInteger DataLen = 0xffff; //Ojo! Si recibimos del L8 mas de ffff bytes se nos acaban los creditos!! volver a pedir creditos TX!
     [self L8SL_RequestTXCredits:DataLen toL8SL:p]; //Quiza aquí si habria que pedir confirmación de envío...
     [self L8SL_EnableTXNotif:p];
 }
-
-
-
-//procesar en TIBLEConfigVC (.h/.m) notificacion TX...
-
-//adaptar controles TIBLEConfigVC para mostrar lo que se recibe... (notificacion TX)
-
-
-
-//JPS L8SL ---------------------- FINI
-
-
-
-
 
 /*!
  *  @method soundBuzzer:
@@ -107,23 +100,27 @@
  *  @discussion Sound the buzzer on a TI keyfob. This method writes a value to the proximity alert service
  *
  */
+
 -(void) soundBuzzer:(Byte)buzVal p:(CBPeripheral *)p 
 {
-    char Data[2] = {0x20, 0x20};
-    NSData *d = [[NSData alloc] initWithBytes:Data length:2];
+    //logmethod();
+    //char Data[2] = {0x20, 0x20};
+    //NSData *d = [[NSData alloc] initWithBytes:Data length:2];
     //[self writeValue:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:TI_KEYFOB_PROXIMITY_ALERT_PROPERTY_UUID p:p data:d];
 }
 -(void) soundBuzzer:(Byte*)buzVal l:(int)buzValLen p:(CBPeripheral *)p 
 {
+    //logmethod();
     //char Data[2] = {0x20, 0x20};
-    NSData *d = [[NSData alloc] initWithBytes:buzVal length:buzValLen];
+    //NSData *d = [[NSData alloc] initWithBytes:buzVal length:buzValLen];
     //[self writeValue:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:TI_KEYFOB_PROXIMITY_ALERT_PROPERTY_UUID p:p data:d];
 }
 
 //...
 -(void) enableLEDs:(Byte)val p:(CBPeripheral *)p
 {
-    NSData *d = [[NSData alloc] initWithBytes:&val length:1];
+    //logmethod();
+    //NSData *d = [[NSData alloc] initWithBytes:&val length:1];
     //[self writeValue:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:CUSTOM_LED_PROPERTY_UUID p:p data:d];
 }
 
@@ -158,26 +155,46 @@
                  withNightDlM:(Byte)nightDlM
                  withMaskMode:(Byte)maskMode
 {
-    //Byte ConfigData[] = {dayVib,dayInt,dayTmS,dayCyc,dayCycInt,nightVib,nightInt,nightTmS,nightCyc,nightCycInt,nightDlM,maskMode};
-    Byte ConfigData[] = {dayVib,dayTmS,dayInt,dayCyc,dayCycInt,nightVib,nightTmS,nightInt,nightCyc,nightCycInt,nightDlM,maskMode};
+    //logmethod();
+    ////Byte ConfigData[] = {dayVib,dayInt,dayTmS,dayCyc,dayCycInt,nightVib,nightInt,nightTmS,nightCyc,nightCycInt,nightDlM,maskMode};
+    //Byte ConfigData[] = {dayVib,dayTmS,dayInt,dayCyc,dayCycInt,nightVib,nightTmS,nightInt,nightCyc,nightCycInt,nightDlM,maskMode};
 
-    NSData *d = [[NSData alloc] initWithBytes:&ConfigData length:CUSTOM_CONFG_PROPERTY_LEN_2];
+    //NSData *d = [[NSData alloc] initWithBytes:&ConfigData length:CUSTOM_CONFG_PROPERTY_LEN_2];
     //[self writeValue:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:CUSTOM_CONFG_PROPERTY_UUID p:p data:d];
 }
+
+-(void) setConfigOnPeripheral:(CBPeripheral *)p
+                   withDayVib:(Byte)dayVib
+                   withDayInt:(Byte)dayInt
+                   withDayTmS:(Byte)dayTmS
+                 withNightVib:(Byte)nightVib
+                 withNightInt:(Byte)nightInt
+                 withNightTmS:(Byte)nightTmS
+                 withNightDlM:(Byte)nightDlM
+                 withMaskMode:(Byte)maskMode
+{
+    
+}
+
+
 
 
 //JPS esto lanza la orden de leer
 -(void) readConfig:(CBPeripheral *)p 
 {
+    //logmethod();
     [self readValue:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:CUSTOM_CONFG_PROPERTY_UUID p:p];
 }
 
--(void) enableNotif:(CBPeripheral *)p {
+-(void) enableNotif:(CBPeripheral *)p
+{
+    //logmethod();
     [self notification:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:CUSTOM_NOTIFY_PROPERTY_UUID p:p on:YES];
 }
 
 -(void) readBatteryLevel:(CBPeripheral *)p
 {
+    //logmethod();
     [self readValue:TI_KEYFOB_PROXIMITY_ALERT_UUID characteristicUUID:CUSTOM_BAT_LVL_PROPERTY_UUID p:p];
 }
 
@@ -197,7 +214,9 @@
  *  @discussion Start a battery level read cycle from the battery level service 
  *
  */
--(void) readBattery:(CBPeripheral *)p {
+-(void) readBattery:(CBPeripheral *)p
+{
+    //logmethod();
     [self readValue:TI_KEYFOB_BATT_SERVICE_UUID characteristicUUID:TI_KEYFOB_LEVEL_SERVICE_UUID p:p];
 }
 
@@ -212,9 +231,11 @@
  *  @discussion Enables the accelerometer and enables notifications on X,Y and Z axis
  *
  */
--(void) enableAccelerometer:(CBPeripheral *)p {
-    char data = 0x01;
-    NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+-(void) enableAccelerometer:(CBPeripheral *)p
+{
+    //logmethod();
+    //char data = 0x01;
+    //NSData *d = [[NSData alloc] initWithBytes:&data length:1];
     //[self writeValue:TI_KEYFOB_ACCEL_SERVICE_UUID characteristicUUID:TI_KEYFOB_ACCEL_ENABLER_UUID p:p data:d];
     [self notification:TI_KEYFOB_ACCEL_SERVICE_UUID characteristicUUID:TI_KEYFOB_ACCEL_X_UUID p:p on:YES];
     [self notification:TI_KEYFOB_ACCEL_SERVICE_UUID characteristicUUID:TI_KEYFOB_ACCEL_Y_UUID p:p on:YES];
@@ -230,9 +251,11 @@
  *  @discussion Disables the accelerometer and disables notifications on X,Y and Z axis
  *
  */
--(void) disableAccelerometer:(CBPeripheral *)p {
-    char data = 0x00;
-    NSData *d = [[NSData alloc] initWithBytes:&data length:1];
+-(void) disableAccelerometer:(CBPeripheral *)p
+{
+    //logmethod();
+    //char data = 0x00;
+    //NSData *d = [[NSData alloc] initWithBytes:&data length:1];
     //[self writeValue:TI_KEYFOB_ACCEL_SERVICE_UUID characteristicUUID:TI_KEYFOB_ACCEL_ENABLER_UUID p:p data:d];
     [self notification:TI_KEYFOB_ACCEL_SERVICE_UUID characteristicUUID:TI_KEYFOB_ACCEL_X_UUID p:p on:NO];
     [self notification:TI_KEYFOB_ACCEL_SERVICE_UUID characteristicUUID:TI_KEYFOB_ACCEL_Y_UUID p:p on:NO];
@@ -249,7 +272,9 @@
  *  @discussion Enables notifications on the simple keypress service
  *
  */
--(void) enableButtons:(CBPeripheral *)p {
+-(void) enableButtons:(CBPeripheral *)p
+{
+    //logmethod();
     [self notification:TI_KEYFOB_KEYS_SERVICE_UUID characteristicUUID:TI_KEYFOB_KEYS_NOTIFICATION_UUID p:p on:YES];
 }
 
@@ -261,7 +286,9 @@
  *  @discussion Disables notifications on the simple keypress service
  *
  */
--(void) disableButtons:(CBPeripheral *)p {
+-(void) disableButtons:(CBPeripheral *)p
+{
+    //logmethod();
     [self notification:TI_KEYFOB_KEYS_SERVICE_UUID characteristicUUID:TI_KEYFOB_KEYS_NOTIFICATION_UUID p:p on:NO];
 }
 
@@ -273,7 +300,9 @@
  *  @discussion Enables notifications on the TX Power level service
  *
  */
--(void) enableTXPower:(CBPeripheral *)p {
+-(void) enableTXPower:(CBPeripheral *)p
+{
+    //logmethod();
     [self notification:TI_KEYFOB_PROXIMITY_TX_PWR_SERVICE_UUID characteristicUUID:TI_KEYFOB_PROXIMITY_TX_PWR_NOTIFICATION_UUID p:p on:YES];
 }
 
@@ -285,7 +314,9 @@
  *  @discussion Disables notifications on the TX Power level service
  *
  */
--(void) disableTXPower:(CBPeripheral *)p {
+-(void) disableTXPower:(CBPeripheral *)p
+{
+    //logmethod();
     [self notification:TI_KEYFOB_PROXIMITY_TX_PWR_SERVICE_UUID characteristicUUID:TI_KEYFOB_PROXIMITY_TX_PWR_NOTIFICATION_UUID p:p on:NO];
 }
 
@@ -309,6 +340,7 @@
 #define L8SL_MTU_MAX    20
 -(void) writeValue:(UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data
 {
+    //logmethod();
     UInt8 s[16];
     UInt8 c[16];
     [self swap2:serviceUUID length:16 toBuffer:(UInt8*)s];
@@ -356,6 +388,7 @@
 
 -(void) writeValue:(UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
+    //logmethod();
     UInt8 s[16];
     UInt8 c[16];
     [self swap2:serviceUUID length:16 toBuffer:(UInt8*)s];
@@ -443,7 +476,9 @@
  *  @see didUpdateValueForCharacteristic
  */
 
--(void) readValue: (UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p {
+-(void) readValue: (UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p
+{
+    //logmethod();
     UInt8 s[16];
     UInt8 c[16];
     [self swap2:serviceUUID length:16 toBuffer:(UInt8*)s];
@@ -500,7 +535,9 @@
  *  If this is found, the notfication is set. 
  *
  */
--(void) notification:(UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p on:(BOOL)on {
+-(void) notification:(UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p on:(BOOL)on
+{
+    //logmethod();
     UInt8 s[16];
     UInt8 c[16];
     [self swap2:serviceUUID length:16 toBuffer:(UInt8*)s];
@@ -554,6 +591,7 @@
  */
 
 -(UInt16) swap:(UInt16)s {
+    //logmethod();
     UInt16 temp = s << 8;
     temp |= (s >> 8);
     return temp;
@@ -561,6 +599,7 @@
 
 -(void) swap2:(UInt8*)s length:(int)len toBuffer:(UInt8*)b
 {
+    //logmethod();
     for(int i = 0; i < len; i++)
         b[len - i -1] = s[i];
 }
@@ -577,6 +616,7 @@
  *
  */
 - (int) controlSetup: (int) s{
+    //logmethod();
     self.CM = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     return 0;
 }
@@ -591,8 +631,9 @@
  *  @discussion findBLEPeripherals searches for BLE peripherals and sets a timeout when scanning is stopped
  *
  */
-- (int) findBLEPeripherals:(int) timeout {
-    
+- (int) findBLEPeripherals:(int) timeout
+{
+    //logmethod();
     if (self->CM.state  != CBCentralManagerStatePoweredOn) {
         printf("CoreBluetooth not correctly initialized !\r\n");
         printf("State = %d (%s)\r\n",self->CM.state,[self centralManagerStateToString:self.CM.state]);
@@ -618,10 +659,16 @@
  *  @discussion connectPeripheral connects to a given peripheral and sets the activePeripheral property of TIBLECBKeyfob.
  *
  */
-- (void) connectPeripheral:(CBPeripheral *)peripheral {
+- (void) connectPeripheral:(CBPeripheral *)peripheral
+{
+    //logmethod();
     printf("Connecting to peripheral with UUID : %s\r\n",[self UUIDToString:peripheral.UUID]);
     activePeripheral = peripheral;
     activePeripheral.delegate = self;
+    if (!self.peripherals) {
+        self.peripherals=[[NSMutableArray alloc] init];
+    }
+    [self.peripherals addObject:peripheral];
     [CM connectPeripheral:activePeripheral options:nil];
 }
 
@@ -633,7 +680,9 @@
  *  @discussion centralManagerStateToString prints information text about a given CBCentralManager state
  *
  */
-- (const char *) centralManagerStateToString: (int)state{
+- (const char *) centralManagerStateToString: (int)state
+{
+    //logmethod();
     switch(state) {
         case CBCentralManagerStateUnknown: 
             return "State unknown (CBCentralManagerStateUnknown)";
@@ -661,11 +710,16 @@
  *  @discussion scanTimer is called when findBLEPeripherals has timed out, it stops the CentralManager from scanning further and prints out information about known peripherals
  *
  */
-- (void) scanTimer:(NSTimer *)timer {
+- (void) scanTimer:(NSTimer *)timer
+{
+    //logmethod();
     [self.CM stopScan];
     printf("Stopped Scanning\r\n");
     printf("Known peripherals : %d\r\n",[self->peripherals count]);
-    [self printKnownPeripherals];	
+    [self printKnownPeripherals];
+    if ([peripherals count]==0) {
+        [self.delegate connectToL8];
+    }
 }
 
 /*!
@@ -674,11 +728,12 @@
  *  @discussion printKnownPeripherals prints all curenntly known peripherals stored in the peripherals array of TIBLECBKeyfob class 
  *
  */
-- (void) printKnownPeripherals {
-    
+- (void) printKnownPeripherals
+{
+    //logmethod();
     int i;
     printf("List of currently known peripherals : \r\n");
-    for (i=0; i < self->peripherals.count; i++)
+    for (i=0; i < self.peripherals.count; i++)
     {
         CBPeripheral *p = [self->peripherals objectAtIndex:i];
         CFStringRef s = CFUUIDCreateString(NULL, p.UUID);
@@ -696,7 +751,9 @@
  *  @discussion printPeripheralInfo prints detailed info about peripheral 
  *
  */
-- (void) printPeripheralInfo:(CBPeripheral*)peripheral {
+- (void) printPeripheralInfo:(CBPeripheral*)peripheral
+{
+    //logmethod();
     CFStringRef s = CFUUIDCreateString(NULL, peripheral.UUID);
     printf("------------------------------------\r\n");
     printf("Peripheral Info :\r\n");
@@ -704,8 +761,8 @@
     printf("RSSI : %d\r\n",[peripheral.RSSI intValue]);
     printf("Name : %s\r\n",[peripheral.name cStringUsingEncoding:NSStringEncodingConversionAllowLossy]);
     printf("isConnected : %d\r\n",peripheral.isConnected);
+    NSLog(@"Services:%@\r\n",peripheral.services.description);
     printf("-------------------------------------\r\n");
-    
 }
 
 /*
@@ -720,7 +777,9 @@
  *
  */
 
-- (int) UUIDSAreEqual:(CFUUIDRef)u1 u2:(CFUUIDRef)u2 {
+- (int) UUIDSAreEqual:(CFUUIDRef)u1 u2:(CFUUIDRef)u2
+{
+    //logmethod();
     CFUUIDBytes b1 = CFUUIDGetUUIDBytes(u1);
     CFUUIDBytes b2 = CFUUIDGetUUIDBytes(u2);
     if (memcmp(&b1, &b2, 16) == 0) {
@@ -740,7 +799,9 @@
  *  When services are found the didDiscoverServices method is called
  *
  */
--(void) getAllServicesFromKeyfob:(CBPeripheral *)p{
+-(void) getAllServicesFromKeyfob:(CBPeripheral *)p
+{
+    //logmethod();
     [p discoverServices:nil]; // Discover all services without filter
     
 }
@@ -755,7 +816,9 @@
  *  pointed to by p
  *
  */
--(void) getAllCharacteristicsFromKeyfob:(CBPeripheral *)p{
+-(void) getAllCharacteristicsFromKeyfob:(CBPeripheral *)p
+{
+    //logmethod();
     for (int i=0; i < p.services.count; i++) {
         CBService *s = [p.services objectAtIndex:i];
         printf("Fetching characteristics for service with UUID : %s\r\n",[self CBUUIDToString:s.UUID]);
@@ -774,7 +837,9 @@
  *  @discussion CBUUIDToString converts the data of a CBUUID class to a character pointer for easy printout using printf()
  *
  */
--(const char *) CBUUIDToString:(CBUUID *) UUID {
+-(const char *) CBUUIDToString:(CBUUID *) UUID
+{
+    //logmethod();
     return [[UUID.data description] cStringUsingEncoding:NSStringEncodingConversionAllowLossy];
 }
 
@@ -789,11 +854,12 @@
  *  @discussion UUIDToString converts the data of a CFUUIDRef class to a character pointer for easy printout using printf()
  *
  */
--(const char *) UUIDToString:(CFUUIDRef)UUID {
+-(const char *) UUIDToString:(CFUUIDRef)UUID
+{
+    //logmethod();
     if (!UUID) return "NULL";
     CFStringRef s = CFUUIDCreateString(NULL, UUID);
-    return CFStringGetCStringPtr(s, 0);		
-    
+    return CFStringGetCStringPtr(s, 0);
 }
 
 /*
@@ -808,7 +874,9 @@
  *
  */
 
--(int) compareCBUUID:(CBUUID *) UUID1 UUID2:(CBUUID *)UUID2 {
+-(int) compareCBUUID:(CBUUID *) UUID1 UUID2:(CBUUID *)UUID2
+{
+    //logmethod();
     char b1[16];
     char b2[16];
     [UUID1.data getBytes:b1];
@@ -829,7 +897,9 @@
  *  if they are equal and 0 if they are not
  *
  */
--(int) compareCBUUIDToInt:(CBUUID *)UUID1 UUID2:(UInt16)UUID2 {
+-(int) compareCBUUIDToInt:(CBUUID *)UUID1 UUID2:(UInt16)UUID2
+{
+    //logmethod();
     char b1[16];
     [UUID1.data getBytes:b1];
     UInt16 b2 = [self swap:UUID2];
@@ -846,7 +916,9 @@
  *  @discussion CBUUIDToInt converts a CBUUID to a Uint16 representation of the UUID
  *
  */
--(UInt16) CBUUIDToInt:(CBUUID *) UUID {
+-(UInt16) CBUUIDToInt:(CBUUID *) UUID
+{
+    //logmethod();
     char b1[16];
     [UUID.data getBytes:b1];
     return ((b1[0] << 8) | b1[1]);
@@ -862,7 +934,9 @@
  *  @discussion IntToCBUUID converts a UInt16 UUID to a CBUUID
  *
  */
--(CBUUID *) IntToCBUUID:(UInt16)UUID {
+-(CBUUID *) IntToCBUUID:(UInt16)UUID
+{
+    //logmethod();
     char t[16];
     t[0] = ((UUID >> 8) & 0xff); t[1] = (UUID & 0xff);
     NSData *data = [[NSData alloc] initWithBytes:t length:16];
@@ -882,7 +956,9 @@
  *  service with a specific UUID
  *
  */
--(CBService *) findServiceFromUUID:(CBUUID *)UUID p:(CBPeripheral *)p {
+-(CBService *) findServiceFromUUID:(CBUUID *)UUID p:(CBPeripheral *)p
+{
+    //logmethod();
     for(int i = 0; i < p.services.count; i++) {
         CBService *s = [p.services objectAtIndex:i];
         if ([self compareCBUUID:s.UUID UUID2:UUID]) return s;
@@ -902,7 +978,9 @@
  *  to find a characteristic with a specific UUID
  *
  */
--(CBCharacteristic *) findCharacteristicFromUUID:(CBUUID *)UUID service:(CBService*)service {
+-(CBCharacteristic *) findCharacteristicFromUUID:(CBUUID *)UUID service:(CBService*)service
+{
+    //logmethod();
     for(int i=0; i < service.characteristics.count; i++) {
         CBCharacteristic *c = [service.characteristics objectAtIndex:i];
         if ([self compareCBUUID:c.UUID UUID2:UUID]) return c;
@@ -926,7 +1004,9 @@
 
 
 
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    //logmethod();
     printf("Status of CoreBluetooth central manager changed %d (%s)\r\n",central.state,[self centralManagerStateToString:central.state]);
 }
 /* //JPS rev 1
@@ -948,7 +1028,9 @@
     printf("didDiscoverPeripheral\r\n");
 }
 */
-- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
+{
+    //logmethod();
     /*    if (!self.peripherals) self.peripherals = [[NSMutableArray alloc] initWithObjects:peripheral,nil];
      else {
      for(int i = 0; i < self.peripherals.count; i++) {
@@ -976,7 +1058,9 @@
 }
 
 
-- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
+{
+    //logmethod();
     printf("Connection to peripheral with UUID : %s successfull\r\n",[self UUIDToString:peripheral.UUID]);
     self.activePeripheral = peripheral;
     
@@ -1013,7 +1097,9 @@
  *
  */
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
+{
+    //logmethod();
     if (!error) {
         printf("Characteristics of service with UUID : %s found\r\n",[self CBUUIDToString:service.UUID]);
         for(int i=0; i < service.characteristics.count; i++)
@@ -1036,11 +1122,14 @@
     }
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    //logmethod();
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverIncludedServicesForService:(CBService *)service error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverIncludedServicesForService:(CBService *)service error:(NSError *)error
+{
+    //logmethod();
 }
 
 /*
@@ -1054,7 +1143,9 @@
  *
  */
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
+{
+    //logmethod();
     if (!error) {
         printf("Services of peripheral with UUID : %s found\r\n",[self UUIDToString:peripheral.UUID]);
         [self getAllCharacteristicsFromKeyfob:peripheral];
@@ -1076,7 +1167,9 @@
  *
  */
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    //logmethod();
     if (!error) {
         printf("Updated notification state for characteristic with UUID %s on service with  UUID %s on peripheral with UUID %s\r\n",[self CBUUIDToString:characteristic.UUID],[self CBUUIDToString:characteristic.service.UUID],[self UUIDToString:peripheral.UUID]);
     }
@@ -1099,9 +1192,11 @@
  *
  */
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    UInt16 characteristicUUID = [self CBUUIDToInt:characteristic.UUID];
-    NSString* CharUUID = [[NSString alloc] initWithData:characteristic.UUID.data encoding:NSASCIIStringEncoding];
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    //logmethod();
+    //UInt16 characteristicUUID = [self CBUUIDToInt:characteristic.UUID];
+    //NSString* CharUUID = [[NSString alloc] initWithData:characteristic.UUID.data encoding:NSASCIIStringEncoding];
     
     if (!error) {
         /*
@@ -1188,33 +1283,35 @@
             }
         }
          */
-        NSString* TXNotifUUIDStr = [[NSString alloc] initWithBytes:L8SL_SPPLE_TX_CHARACTERISTIC_UUID_BYTES length:16 encoding:NSASCIIStringEncoding];
-        if ([TXNotifUUIDStr isEqualToString:CharUUID])
-        {
+//        NSString* TXNotifUUIDStr = [[NSString alloc] initWithBytes:L8SL_SPPLE_TX_CHARACTERISTIC_UUID_BYTES length:16 encoding:NSASCIIStringEncoding];
+//        if ([TXNotifUUIDStr isEqualToString:CharUUID])
+//        {
             //Leer datos recibidos del L8SL...
             [[self delegate] processDataFromPeripheral:characteristic.value];
-        }
+//        }
     }
     else {
         printf("updateValueForCharacteristic failed !");
     }
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForDescriptor:(CBDescriptor *)descriptor error:(NSError *)error {
-    
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForDescriptor:(CBDescriptor *)descriptor error:(NSError *)error
+{
+    //logmethod();
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    
+- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    //logmethod();
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForDescriptor:(CBDescriptor *)descriptor error:(NSError *)error {
-    
+- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForDescriptor:(CBDescriptor *)descriptor error:(NSError *)error
+{
+    //logmethod();
 }
 
-- (void)peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error {
-    
+- (void)peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    //logmethod();
 }
-
-
 @end
