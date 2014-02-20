@@ -127,13 +127,35 @@
                                green:MAX(g - delta, 0.0)
                                 blue:MAX(b - delta, 0.0)
                                alpha:a];
+    
     return nil;
+}
+
++(UIColor *)inverseColor:(UIColor *)color
+{
+    const CGFloat *componentColors = CGColorGetComponents(color.CGColor);
+    
+    return [[UIColor alloc] initWithRed:(1.0 - componentColors[0])
+                                               green:(1.0 - componentColors[1])
+                                                blue:(1.0 - componentColors[2])
+                                               alpha:componentColors[3]];
 }
 
 + (BOOL)validateEmail:(NSString *)candidate {
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     return [emailTest evaluateWithObject:candidate];
+}
+
++ (NSString *)hexToString:(NSString *)string {
+    NSMutableString * newString = [[NSMutableString alloc] init];
+    NSScanner *scanner = [[NSScanner alloc] initWithString:string];
+    unsigned value;
+    while([scanner scanHexInt:&value]) {
+        [newString appendFormat:@"%c",(char)(value & 0xFF)];
+    }
+    string = [newString copy];
+    return string;
 }
 
 @end

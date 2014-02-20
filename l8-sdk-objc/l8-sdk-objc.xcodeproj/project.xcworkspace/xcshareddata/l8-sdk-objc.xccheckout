@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>7B0A9548-E2B6-4367-A556-95150E87E930</string>
+	<string>8A8A3EDA-0ED4-497F-A6A9-605BCB62B99E</string>
 	<key>IDESourceControlProjectName</key>
 	<string>l8-sdk-objc</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>57F280B0-DC25-453E-A65B-37C32DB79C05</key>
-		<string>https://github.com/l8smartlight/l8-sdk-objc</string>
+		<key>97846A4E-2AEE-4416-9712-4A7FB9B121AC</key>
+		<string>https://github.com/l8smartlight/l8-sdk-objc.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>l8-sdk-objc/l8-sdk-objc.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>57F280B0-DC25-453E-A65B-37C32DB79C05</key>
+		<key>97846A4E-2AEE-4416-9712-4A7FB9B121AC</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/l8smartlight/l8-sdk-objc</string>
+	<string>https://github.com/l8smartlight/l8-sdk-objc.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>57F280B0-DC25-453E-A65B-37C32DB79C05</string>
+	<string>97846A4E-2AEE-4416-9712-4A7FB9B121AC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>57F280B0-DC25-453E-A65B-37C32DB79C05</string>
+			<string>97846A4E-2AEE-4416-9712-4A7FB9B121AC</string>
 			<key>IDESourceControlWCCName</key>
-			<string>L8-SDK-OBJC</string>
+			<string>l8-sdk-objc</string>
 		</dict>
 	</array>
 </dict>

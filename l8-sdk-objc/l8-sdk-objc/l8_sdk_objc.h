@@ -22,6 +22,7 @@ typedef void(^L8IntegerOperationHandler)(NSInteger result);
 typedef void(^L8VersionOperationHandler)(L8Version *result);
 typedef void(^L8SensorStatusOperationHandler)(L8SensorStatus *result);
 typedef void(^L8SensorsStatusOperationHandler)(NSArray *result);
+typedef void(^L8NotificationsStatusOperationHandler)(NSArray *result);
 typedef void(^L8JSONOperationHandler)(NSMutableDictionary *result);
 
 typedef enum {
@@ -35,6 +36,8 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 @protocol L8 <NSObject>
 
 - (L8ConnectionType)getConnectionType;
+
+- (void)stopAnimation;
 
 - (void)setMatrix:(NSArray *)colorMatrix withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
@@ -50,7 +53,7 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 
 - (void)setSuperLED:(UIColor *)color withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
-- (void)clearSuperLEDWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)clearSuperLEDWithSuccess:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (void)readSuperLEDWithSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
@@ -81,6 +84,24 @@ extern NSInteger const kL8ErrorCodeColorNotInRGBSpace;
 - (void)setAnimation:(L8Animation *)animation withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 - (NSString *)connectionURL;
+
+
+- (void)readFirmValues:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)newClearMatrix:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)readNotificationsStatusWithSuccess:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)notificationsStatusQuery:(NSNumber *)n isImage:(BOOL)isImage;
+- (void)setAllNotificationStatus:(BOOL)state;
+- (void)setNotificationStatus:(NSNumber *)n state:(BOOL)state;
+- (void)setModeDice:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)setModeParty:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)setModeProximity:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)setModeLuminity:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)setModeMulticolor:(NSNumber *)num success:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+
+- (void)enableAllNotis:(BOOL)state success:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)stopAppMode:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
+- (void)switchOffL8:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure;
 
 @end
 

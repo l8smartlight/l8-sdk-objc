@@ -121,6 +121,11 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
 
 @implementation BluetoothL8
 
+//In order to stop animations
+
+
+
+
 - (L8ConnectionType)getConnectionType
 {
     return L8ConnectionTypeBluetooth;
@@ -132,9 +137,28 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
     return nil;
 }
 
+
+- (void)stopAnimation{
+    
+
+    if (cancelledPtr)
+    {
+        NSLog(@"stopping");
+        
+        *cancelledPtr = YES;
+    }
+
+}
+
 - (void)setMatrix:(NSArray *)colorMatrix withSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-
+    [self clearMatrixWithSuccess:^{
+        NSLog(@"Matrix cleared");
+    } failure:^(NSMutableDictionary *result) {
+        NSLog(@"Error!! Matrix is not cleared");
+    }];
+    success();
+    
     NSString *matrixString=[[colorMatrix valueForKey:@"description"] componentsJoinedByString:@"-"];
     NSData* MtxData = [self getL8yMatrixCompressed_ByString:matrixString];
     
@@ -263,6 +287,11 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
     NSData* Cmd = [[NSData alloc] initWithBytes:(void*)DataBytes length:DataBytes_Len];
     
     [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"isAnimating"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"stopAnimation"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)readMatrixWithSuccess:(L8ColorMatrixOperationHandler)success failure:(L8JSONOperationHandler)failure
@@ -313,9 +342,21 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
     NSLog(@"Not implemented!");
 }
 
-- (void)clearSuperLEDWithSuccess:(L8VoidOperationHandler)success failure:(L8JSONOperationHandler)failure
+- (void)clearSuperLEDWithSuccess:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
 {
-    NSLog(@"Not implemented!");
+
+    
+    //NSLog(@"Not implemented!");
+    unsigned char CmdRaw[8] =
+    {
+        0xAA, 0x55, 0x04,0x4B, 0x00,0x00,0x00,
+    };
+    CmdRaw[7]    = crc8(&CmdRaw[3],4);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:8];
+    NSLog(@"----Clear SuperLed----> %@",Cmd);
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+
 }
 
 - (void)readSuperLEDWithSuccess:(L8ColorOperationHandler)success failure:(L8JSONOperationHandler)failure
@@ -375,6 +416,467 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
     
 }
 
+
+#pragma mark - Firmware calls
+- (void)readFirmValues:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x60,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    NSLog(@"---- VERSIONS_QUERY ----> %@",Cmd);
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+#pragma mark - notifications methods
+
+
+- (void)newClearMatrix:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    int DataBytes_Len = L8SL_CMD_SET_LED_MATRIX_COLOR_NONE_HDR_LEN + 1;
+    unsigned char DataBytes[DataBytes_Len];
+    int j = 0;
+    for (int i = 0; i < L8SL_CMD_SET_LED_MATRIX_COLOR_NONE_HDR_LEN; i++,j++)
+    {//Header
+        DataBytes[j] = L8SL_CMD_SET_LED_MATRIX_COLOR_NONE_HDR[i];
+    }
+    {//CRC
+        DataBytes[j] = L8SL_CMD_SET_LED_MATRIX_COLOR_NONE_CRC;
+    }
+        
+
+
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)DataBytes length:DataBytes_Len];
+
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+
+}
+- (void)readNotificationsStatusWithSuccess:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure
+{
+    //NSLog(@"Not implemented!");
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x95,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    NSLog(@"--------> %@",Cmd);
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+// New feature >1.08.36. 
+
+-(void) notificationsStatusQuery:(NSNumber *)n isImage:(BOOL)isImage{
+    int myInt =[n integerValue];
+
+
+    unsigned char * c = (unsigned char*)(&myInt); //In C++ should be intermediate cst to void*
+
+    if(!isImage){
+
+        unsigned char CmdRaw[7] =
+        {
+            0xAA, 0x55, 0x03, 0x93, *c, 0x00
+        };
+        CmdRaw[6]    = crc8(&CmdRaw[3],3);
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:7];
+        NSLog(@"-------- %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+        
+    }else{
+        unsigned char CmdRaw[7] =
+        {
+            0xAA, 0x55, 0x03, 0x93, *c, 0x01
+        };
+        CmdRaw[6]    = crc8(&CmdRaw[3],3);
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:7];
+        NSLog(@"-------- %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }
+
+
+    
+  
+}
+
+
+-(void)setModeDice:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+
+    if([prefs valueForKey:@"diceR"]){
+        //NSLog(@"Not implemented!");
+        
+        UIColor* tColor = [UIColor colorWithRed:[prefs floatForKey:@"diceR"] green:[prefs floatForKey:@"diceG"] blue:[prefs floatForKey:@"diceB"] alpha:0.0f];
+        
+        CGFloat components[3];
+        [self getRGBComponents:components forColor:tColor];
+        NSLog(@"%f %f %f", components[0], components[1], components[2]);
+        
+        const CGFloat  *componentts = CGColorGetComponents(tColor.CGColor);
+        float rr = 255*componentts[0];
+        float gg = 255*componentts[1];
+        float bb = 255*componentts[2];
+        unsigned char r = (unsigned char)rr;
+        unsigned char g = (unsigned char)gg;
+        unsigned char b = (unsigned char)bb;
+
+        
+        unsigned char CmdRaw[2+1+1+0+1+1+1+1+1] =
+        {
+            0xAA, 0x55, 0x05, 0x81, 0x00, r, g, b,
+        };
+        CmdRaw[8]    = crc8(&CmdRaw[3],5);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1+1+1+1+1];
+        NSLog(@"----Mode Dice----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }else{
+    
+        //NSLog(@"Not implemented!");
+        unsigned char CmdRaw[2+1+1+0+1+1+1+1+1] =
+        {
+            0xAA, 0x55, 0x05, 0x81, 0x00, 0x00, 0x0F, 0x00,
+        };
+        CmdRaw[8]    = crc8(&CmdRaw[3],5);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1+1+1+1+1];
+        NSLog(@"----Mode Dice----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }
+}
+
+-(void)setModeParty:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+    
+    
+    //NSLog(@"Not implemented!");
+    unsigned char CmdRaw[2+1+1+0+1+1] =
+    {
+        0xAA, 0x55, 0x02, 0x81, 0x01,
+    };
+    CmdRaw[5]    = crc8(&CmdRaw[3],2);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1+1];
+    NSLog(@"----Party Mode----> %@",Cmd);
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+- (void)setModeProximity:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    if([prefs valueForKey:@"proxFrontR"]){
+        //NSLog(@"Not implemented!");
+        
+        UIColor* fColor = [UIColor colorWithRed:[prefs floatForKey:@"proxFrontR"] green:[prefs floatForKey:@"proxFrontG"] blue:[prefs floatForKey:@"proxFrontB"] alpha:0.0f];
+        
+        UIColor* bColor = [UIColor blackColor];
+        
+        if([prefs valueForKey:@"proxBackR"]){
+                bColor = [UIColor colorWithRed:[prefs floatForKey:@"proxBackR"] green:[prefs floatForKey:@"proxBackG"] blue:[prefs floatForKey:@"proxBackB"] alpha:0.0f];
+        }
+        
+        CGFloat components[3];
+        [self getRGBComponents:components forColor:fColor];
+        const CGFloat  *componentts = CGColorGetComponents(fColor.CGColor);
+        float rr = 255*componentts[0];
+        float gg = 255*componentts[1];
+        float bb = 255*componentts[2];
+        unsigned char r = (unsigned char)rr;
+        unsigned char g = (unsigned char)gg;
+        unsigned char b = (unsigned char)bb;
+        
+        CGFloat componentsb[3];
+        [self getRGBComponents:componentsb forColor:bColor];
+        const CGFloat  *componenttsb = CGColorGetComponents(bColor.CGColor);
+        float rrb = 255*componenttsb[0];
+        float ggb = 255*componenttsb[1];
+        float bbb = 255*componenttsb[2];
+        unsigned char rback = (unsigned char)rrb;
+        unsigned char gback = (unsigned char)ggb;
+        unsigned char bback = (unsigned char)bbb;
+        
+
+        float myInt =[prefs floatForKey:@"proxiThre"];
+//        redondeo a la baja el valor de 0 a 100 
+//        int result = floor(myInt*255/100);
+
+        
+        
+        NSString *s = [[NSString alloc] initWithFormat: @"%02x", (int) myInt];
+        
+        NSScanner *scanner = [NSScanner scannerWithString:s];
+        uint32_t hex;
+        [scanner scanHexInt:&hex];
+        unsigned char CmdRaw[14] =
+        {
+            
+            0xAA, 0x55, 0x0A, 0x81, 0x03, rback, gback, bback,r, g, b, hex, 0x00,
+        };
+        CmdRaw[13]    = crc8(&CmdRaw[3],10);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:14];
+        NSLog(@"----Proximity Mode----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+
+    }else{
+        float myInt =[prefs floatForKey:@"proxiThre"];
+        NSString *s = [[NSString alloc] initWithFormat: @"%02x", (int) myInt];
+        
+        NSScanner *scanner = [NSScanner scannerWithString:s];
+        uint32_t hex;
+        [scanner scanHexInt:&hex];
+
+        
+        unsigned char CmdRaw[14] =
+        {
+
+            0xAA, 0x55, 0x0A, 0x81, 0x03, 0xFF, 0xFF, 0xFF,0x0F, 0x0F, 0x0F, hex, 0x00,
+        };
+        CmdRaw[13]    = crc8(&CmdRaw[3],10);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:14];
+        NSLog(@"----Proximity Mode----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }
+}
+
+- (void)setModeLuminity:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+    
+    
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    if([prefs valueForKey:@"lumFrontR"]){
+        //NSLog(@"Not implemented!");
+        
+        UIColor* fColor = [UIColor colorWithRed:[prefs floatForKey:@"lumFrontR"] green:[prefs floatForKey:@"lumFrontG"] blue:[prefs floatForKey:@"lumFrontB"] alpha:0.0f];
+        
+        UIColor* bColor = [UIColor blackColor];
+        
+        if([prefs valueForKey:@"lumBackR"]){
+            bColor = [UIColor colorWithRed:[prefs floatForKey:@"lumBackR"] green:[prefs floatForKey:@"lumBackG"] blue:[prefs floatForKey:@"lumBackB"] alpha:0.0f];
+        }
+        
+        CGFloat components[3];
+        [self getRGBComponents:components forColor:fColor];
+        const CGFloat  *componentts = CGColorGetComponents(fColor.CGColor);
+        float rr = 255*componentts[0];
+        float gg = 255*componentts[1];
+        float bb = 255*componentts[2];
+        unsigned char r = (unsigned char)rr;
+        unsigned char g = (unsigned char)gg;
+        unsigned char b = (unsigned char)bb;
+        
+        CGFloat componentsb[3];
+        [self getRGBComponents:componentsb forColor:bColor];
+        const CGFloat  *componenttsb = CGColorGetComponents(bColor.CGColor);
+        float rrb = 255*componenttsb[0];
+        float ggb = 255*componenttsb[1];
+        float bbb = 255*componenttsb[2];
+        unsigned char rback = (unsigned char)rrb;
+        unsigned char gback = (unsigned char)ggb;
+        unsigned char bback = (unsigned char)bbb;
+        
+        
+        float myInt =[prefs floatForKey:@"lumThre"];
+        //        redondeo a la baja el valor de 0 a 100
+        NSString *s = [[NSString alloc] initWithFormat: @"%02x", (int) myInt];
+        
+        NSScanner *scanner = [NSScanner scannerWithString:s];
+        uint32_t hex;
+        [scanner scanHexInt:&hex];
+        
+        unsigned char CmdRaw[14] =
+        {
+            
+            0xAA, 0x55, 0x0A, 0x81, 0x03, r, g, b,rback, gback, bback, hex, 0x01,
+        };
+        CmdRaw[13]    = crc8(&CmdRaw[3],10);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:14];
+        NSLog(@"----Luminity Mode----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+        
+    }else{
+        float myInt =[prefs floatForKey:@"lumThre"];
+        //        redondeo a la baja el valor de 0 a 100
+        NSString *s = [[NSString alloc] initWithFormat: @"%02x", (int) myInt];
+        
+        NSScanner *scanner = [NSScanner scannerWithString:s];
+        uint32_t hex;
+        [scanner scanHexInt:&hex];
+
+        //NSLog(@"Not implemented!");
+        unsigned char CmdRaw[14] =
+        {
+            
+            0xAA, 0x55, 0x0A, 0x81, 0x03, 0x0F, 0x0F, 0x0F,0x0F, 0x0F, 0x0F, hex, 0x01,
+        };
+        CmdRaw[13]    = crc8(&CmdRaw[3],10);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:14];
+        NSLog(@"----Luminity Mode----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+        
+    }
+}
+- (void)setModeMulticolor:(NSNumber *)num success:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+
+
+    int modeNum =[num integerValue];
+    unsigned char * mn = (unsigned char*)(&modeNum);
+    if([prefs valueForKey:@"multicolorSpeed"]){
+
+\
+        BOOL myBool = [prefs boolForKey:@"multicolorSwitch"];
+        int val = (myBool ? 1 : 0);
+        
+        float myInt =[prefs floatForKey:@"multicolorSpeed"];
+        unsigned char c = (unsigned char)myInt; //In C++ should be intermediate cst to void*
+        
+        unsigned char invert = (unsigned char)val; //In C++ should be intermediate cst to void*
+        unsigned char CmdRaw[9] =
+        {
+            
+            0xAA, 0x55, 0x05, 0x81, 0x02, *mn, c, invert,
+        };
+        CmdRaw[8]    = crc8(&CmdRaw[3],5);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:9];
+        NSLog(@"----Multicolor Mode----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+        
+    }else{
+    //NSLog(@"Not implemented!");
+        unsigned char CmdRaw[9] =
+        {
+
+            0xAA, 0x55, 0x05, 0x81, 0x02, 0x01, 0x30, 0x00,
+        };
+        CmdRaw[8]    = crc8(&CmdRaw[3],5);
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:9];
+        NSLog(@"----Multicolor Mode----> %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+        
+    }
+}
+
+- (void)switchOffL8:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+
+    //NSLog(@"Not implemented!");
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x9D,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    NSLog(@"----Switch OFF----> %@",Cmd);
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+-(void)stopAppMode:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+    
+    //NSLog(@"Not implemented!");  
+    unsigned char CmdRaw[2+1+1+0+1] =
+    {
+        0xAA, 0x55, 0x01, 0x82,
+    };
+    CmdRaw[4]    = crc8(&CmdRaw[3],1);
+    
+    NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:2+1+1+0+1];
+    NSLog(@"----Stop Mode----> %@",Cmd);
+    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+}
+
+
+-(void)enableAllNotis:(BOOL)state success:(L8NotificationsStatusOperationHandler)success failure:(L8JSONOperationHandler)failure{
+     if(state){
+         unsigned char CmdRaw[6] =
+         {
+             0xAA, 0x55, 0x02, 0x99,0x01,
+         };
+         CmdRaw[5]    = crc8(&CmdRaw[3],2);
+         
+         
+         NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:6];
+         NSLog(@"-------- %@",Cmd);
+         [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+     }else{
+         unsigned char CmdRaw[6] =
+         {
+             0xAA, 0x55, 0x02, 0x99, 0x01,
+         };
+         CmdRaw[5]    = crc8(&CmdRaw[3],2);
+         
+         
+         NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:6];
+         NSLog(@"-------- %@",Cmd);
+         [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+     }
+}
+
+// Firmware >1.08.36
+// Enable / Disable all notifications
+
+- (void)setAllNotificationStatus:(BOOL)state{
+    
+    if(state){
+        unsigned char CmdRaw[6] =
+        {
+            0xAA, 0x55,0x02, 0xA4, 0x01,
+        };
+        CmdRaw[5]    = crc8(&CmdRaw[3],2);
+        
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:6];
+        NSLog(@"-------- %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }else{
+        unsigned char CmdRaw[6] =
+        {
+            0xAA, 0x55,0x02, 0xA4, 0x00,
+        };
+        CmdRaw[5]    = crc8(&CmdRaw[3],2);
+        
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:6];
+        NSLog(@"-------- %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }
+}
+
+- (void)setNotificationStatus:(NSNumber *)n state:(BOOL)state{
+    int myInt =[n integerValue];
+    unsigned char * c = (unsigned char*)(&myInt); //In C++ should be intermediate cst to void*
+
+    if(state){
+        unsigned char CmdRaw[7] =
+        {
+            0xAA, 0x55,0x03, 0x97, *c, 0x01,
+        };
+        CmdRaw[6]    = crc8(&CmdRaw[3],3);
+        
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:7];
+        NSLog(@"-------- %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }else{
+        unsigned char CmdRaw[7] =
+        {
+            0xAA, 0x55,0x03, 0x97, *c, 0x00,
+        };
+        CmdRaw[6]    = crc8(&CmdRaw[3],3);
+        
+        
+        NSData* Cmd = [[NSData alloc] initWithBytes:(void*)CmdRaw length:7];
+        NSLog(@"-------- %@",Cmd);
+        [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral]];
+    }
+    
+}
 #pragma mark - sensors methods
 
 -(void) microQuery{
@@ -506,122 +1008,140 @@ unsigned char crc8(unsigned char *buffer,unsigned int size)
         NSLog(@"Error!! Matrix is not cleared");
     }];
     success();
+    
+   
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        for (int k=0 ;k<animation.frameStrings.count; k++) {
-            NSString *matrixString=[[[animation.frameStrings objectAtIndex:k] valueForKey:@"description"] componentsJoinedByString:@"-"];
-            NSData* MtxData = [self getL8yMatrixCompressed_ByString:matrixString];
-            
-            int DataBytes_Len = L8SL_PKT_START_LEN +
-            L8SL_PKT_LENGHT_LEN +
-            L8SL_CMD_SETLEDMTRX_LEN +
-            L8SL_LED_MATRIX_A * 2 +
-            L8SL_CMD_CRC_LEN;
-            
-            unsigned char DataBytes[DataBytes_Len];
-            int j = 0;
-            for (int i = 0; i < L8SL_PKT_START_LEN; i++,j++)
-            {//Pkt start
-                DataBytes[j]    = L8SL_PKT_START[i];
-            }
-            for (int i = 0; i < L8SL_CMD_SETLEDMTRX_LEN; i++,j++)
-            {//DataLen reset
-                DataBytes[j]    = 0;
-            }
-            for (int i = 0; i < L8SL_PKT_LENGHT_LEN; i++,j++)
-            {//Cmd field
-                DataBytes[j]    = L8SL_CMD_SETLEDMTRX[i];
-            }
-            unsigned char MtxDataBytes[5000];
-            [MtxData getBytes:MtxDataBytes];
-            
-            for (int i = 0; i < L8SL_LED_MATRIX_A*2; i+=2,j+=2)
-            {//Data
-                DataBytes[j]    = MtxDataBytes[i+1];
-                DataBytes[j+1]  = MtxDataBytes[i];
+        for (int p=0; p<2;p++){
+            for (int k=0 ;k<animation.frameStrings.count; k++) {
+                NSString *matrixString=[[[animation.frameStrings objectAtIndex:k] valueForKey:@"description"] componentsJoinedByString:@"-"];
+                NSData* MtxData = [self getL8yMatrixCompressed_ByString:matrixString];
                 
-                DataBytes[2]    += 2; //Packet payload length
-            }
-            {//CRC
-                DataBytes[j]    = crc8(&DataBytes[3],DataBytes_Len-4);
+                int DataBytes_Len = L8SL_PKT_START_LEN +
+                L8SL_PKT_LENGHT_LEN +
+                L8SL_CMD_SETLEDMTRX_LEN +
+                L8SL_LED_MATRIX_A * 2 +
+                L8SL_CMD_CRC_LEN;
                 
-                DataBytes[2]    += 1; //Packet payload length
-            }
-            
-            
-            NSData* Cmd = [[NSData alloc] initWithBytes:(void*)DataBytes length:DataBytes_Len];
-            
-            
-            NSString* CmdStr = HexEncoding_BytesToString(Cmd);
-            printf("%s\n",[[CmdStr substringToIndex:2*(L8SL_PKT_START_LEN + L8SL_PKT_LENGHT_LEN + L8SL_CMD_SETLEDMTRX_LEN) ] UTF8String]);
-            CmdStr=[CmdStr substringFromIndex:2*(L8SL_PKT_START_LEN + L8SL_PKT_LENGHT_LEN + L8SL_CMD_SETLEDMTRX_LEN) ];
-            for (int i = 0; i < CmdStr.length / (16*2)+1; i++)
-            {
-                int len = CmdStr.length - (i*16*2);
-                if (len > 32)
-                    len = 32;
+                unsigned char DataBytes[DataBytes_Len];
+                int j = 0;
+                for (int i = 0; i < L8SL_PKT_START_LEN; i++,j++)
+                {//Pkt start
+                    DataBytes[j]    = L8SL_PKT_START[i];
+                }
+                for (int i = 0; i < L8SL_CMD_SETLEDMTRX_LEN; i++,j++)
+                {//DataLen reset
+                    DataBytes[j]    = 0;
+                }
+                for (int i = 0; i < L8SL_PKT_LENGHT_LEN; i++,j++)
+                {//Cmd field
+                    DataBytes[j]    = L8SL_CMD_SETLEDMTRX[i];
+                }
+                unsigned char MtxDataBytes[5000];
+                [MtxData getBytes:MtxDataBytes];
                 
-                NSRange rng = NSMakeRange(i*16*2, len);
-                printf("%s\n", [[CmdStr substringWithRange:rng ] UTF8String]);
-            }
-            
-            //---------- BACK LED
-            
-            NSData* BckData = [self getL8yBackLED_ByString:matrixString];
-            int DataBytes_Len2 =    L8SL_PKT_START_LEN +
-            L8SL_PKT_LENGHT_LEN +
-            L8SL_CMD_SETLEDMTRX_LEN +
-            BckData.length +
-            L8SL_CMD_CRC_LEN;
-            
-            unsigned char DataBytes2[DataBytes_Len2];
-            j= 0;
-            for (int i = 0; i < L8SL_PKT_START_LEN; i++,j++)
-            {//Pkt start
-                DataBytes2[j]    = L8SL_PKT_START[i];
-            }
-            for (int i = 0; i < L8SL_PKT_LENGHT_LEN; i++,j++)
-            {//DataLen reset
-                DataBytes2[j]    = 0;
-            }
-            for (int i = 0; i < L8SL_CMD_SETBACKLED_LEN; i++,j++)
-            {//Cmd field
-                DataBytes2[j]    = L8SL_CMD_SETBACKLED[i];
-            }
-            unsigned char BckDataBytes[3];
-            [BckData getBytes:BckDataBytes];
-            for (int i = 0; i < BckData.length; i++,j++)
-            {//Data
-                DataBytes2[j]    = BckDataBytes[i];
+                for (int i = 0; i < L8SL_LED_MATRIX_A*2; i+=2,j+=2)
+                {//Data
+                    DataBytes[j]    = MtxDataBytes[i+1];
+                    DataBytes[j+1]  = MtxDataBytes[i];
+                    
+                    DataBytes[2]    += 2; //Packet payload length
+                }
+                {//CRC
+                    DataBytes[j]    = crc8(&DataBytes[3],DataBytes_Len-4);
+                    
+                    DataBytes[2]    += 1; //Packet payload length
+                }
                 
-                DataBytes2[2]    += 1; //Packet payload length
-            }
-            {//CRC
-                DataBytes2[j]    = crc8(&DataBytes2[3],DataBytes_Len2-4);
                 
-                DataBytes2[2]    += 1; //Packet payload length
-            }
-            
-            NSData* Cmd2 = [[NSData alloc] initWithBytes:(void*)DataBytes2 length:DataBytes_Len2];
-            
-            CmdStr = HexEncoding_BytesToString(Cmd2);
-            for (int i = 0; i < CmdStr.length / (16*2)+1; i++)
-            {
-                int len = CmdStr.length - (i*16*2);
-                if (len > 32)
-                    len = 32;
+                NSData* Cmd = [[NSData alloc] initWithBytes:(void*)DataBytes length:DataBytes_Len];
                 
-                NSRange rng = NSMakeRange(i*16*2, len);
-                printf("%s\n", [[CmdStr substringWithRange:rng ] UTF8String]);
+                
+                NSString* CmdStr = HexEncoding_BytesToString(Cmd);
+                printf("%s\n",[[CmdStr substringToIndex:2*(L8SL_PKT_START_LEN + L8SL_PKT_LENGHT_LEN + L8SL_CMD_SETLEDMTRX_LEN) ] UTF8String]);
+                CmdStr=[CmdStr substringFromIndex:2*(L8SL_PKT_START_LEN + L8SL_PKT_LENGHT_LEN + L8SL_CMD_SETLEDMTRX_LEN) ];
+                for (int i = 0; i < CmdStr.length / (16*2)+1; i++)
+                {
+                    int len = CmdStr.length - (i*16*2);
+                    if (len > 32)
+                        len = 32;
+                    
+                    NSRange rng = NSMakeRange(i*16*2, len);
+                    printf("%s\n", [[CmdStr substringWithRange:rng ] UTF8String]);
+                }
+                
+                //---------- BACK LED
+                
+                NSData* BckData = [self getL8yBackLED_ByString:matrixString];
+                int DataBytes_Len2 =    L8SL_PKT_START_LEN +
+                L8SL_PKT_LENGHT_LEN +
+                L8SL_CMD_SETLEDMTRX_LEN +
+                BckData.length +
+                L8SL_CMD_CRC_LEN;
+                
+                unsigned char DataBytes2[DataBytes_Len2];
+                j= 0;
+                for (int i = 0; i < L8SL_PKT_START_LEN; i++,j++)
+                {//Pkt start
+                    DataBytes2[j]    = L8SL_PKT_START[i];
+                }
+                for (int i = 0; i < L8SL_PKT_LENGHT_LEN; i++,j++)
+                {//DataLen reset
+                    DataBytes2[j]    = 0;
+                }
+                for (int i = 0; i < L8SL_CMD_SETBACKLED_LEN; i++,j++)
+                {//Cmd field
+                    DataBytes2[j]    = L8SL_CMD_SETBACKLED[i];
+                }
+                unsigned char BckDataBytes[3];
+                [BckData getBytes:BckDataBytes];
+                for (int i = 0; i < BckData.length; i++,j++)
+                {//Data
+                    DataBytes2[j]    = BckDataBytes[i];
+                    
+                    DataBytes2[2]    += 1; //Packet payload length
+                }
+                {//CRC
+                    DataBytes2[j]    = crc8(&DataBytes2[3],DataBytes_Len2-4);
+                    
+                    DataBytes2[2]    += 1; //Packet payload length
+                }
+                
+                NSData* Cmd2 = [[NSData alloc] initWithBytes:(void*)DataBytes2 length:DataBytes_Len2];
+                
+                CmdStr = HexEncoding_BytesToString(Cmd2);
+                for (int i = 0; i < CmdStr.length / (16*2)+1; i++)
+                {
+                    int len = CmdStr.length - (i*16*2);
+                    if (len > 32)
+                        len = 32;
+                    
+                    NSRange rng = NSMakeRange(i*16*2, len);
+                    printf("%s\n", [[CmdStr substringWithRange:rng ] UTF8String]);
+                }
+                
+                BOOL state = [[NSUserDefaults standardUserDefaults] boolForKey:@"stopAnimation"];
+                
+                if (!state ) {
+                
+                    //
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"isAnimating"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral] ];
+                    [self.t L8SL_SendData:Cmd2 toL8SL:[self.t activePeripheral] ];
+                    usleep(([(L8Frame*)[animation.frames objectAtIndex:k] duration]*800));
+                }else{
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"isAnimating"];
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"stopAnimation"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    return;
+                }
+    //            sleep(([(L8Frame*)[animation.frames objectAtIndex:k] duration]/250.0));
             }
-            
-            
-            //
-            [self.t L8SL_SendData:Cmd toL8SL:[self.t activePeripheral] ];
-            [self.t L8SL_SendData:Cmd2 toL8SL:[self.t activePeripheral] ];
-            sleep(([(L8Frame*)[animation.frames objectAtIndex:k] duration]/1000.0));
         }
-        
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"isAnimating"];
     });
+    
 }
 
 - (NSString *)connectionURL

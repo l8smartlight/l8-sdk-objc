@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "l8_sdk_objc.h"
 #import "TIBLECBKeyfob.h"
-@interface BluetoothL8 : NSObject <L8>
+@interface BluetoothL8 : NSObject <L8>{
+    BOOL*   cancelledPtr;
+}
 @property (nonatomic,strong) TIBLECBKeyfob *t;
 @end

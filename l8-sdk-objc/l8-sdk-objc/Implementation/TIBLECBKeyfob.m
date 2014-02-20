@@ -337,7 +337,7 @@
  *  If this is found, value is written. If not nothing is done.
  *
  */
-#define L8SL_MTU_MAX    20
+#define L8SL_MTU_MAX    23
 -(void) writeValue:(UInt8*)serviceUUID characteristicUUID:(UInt8*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data
 {
     //logmethod();
@@ -646,8 +646,30 @@
     //NSArray* L8SL_Service = [[NSArray alloc] initWithObjects:L8SL_SPPLE_SERVICE_UUID, nil];
     
     printf("Scanning...\r\n");
-    [self.CM scanForPeripheralsWithServices:/*L8SL_Service/*/nil  options:0]; // Start scanning
+    
+    //    Si tenemos dispositivos que hemos pareado los buscamos y conectamos
+    
+    if(![[[NSUserDefaults standardUserDefaults] valueForKey:@"Last_L8_Device_Id"] isEqualToString:@"NULL"]){
+        NSString *lastId = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"Last_L8_Device_Id"]];
+        NSUUID *uuid = [[NSUUID alloc]initWithUUIDString:lastId];//where savedUUID is the string version of the NSUUID you've saved somewhere
+        
+        NSArray *peripheralsNew = [self.CM retrievePeripheralsWithIdentifiers:@[uuid]];
+        if(peripheralsNew.count>0){
+        
+            for(CBPeripheral *periph in peripheralsNew)
+            {
+                [self connectPeripheral:periph];
+    //        [self.CM scanForPeripheralsWithServices:periph.services  options:0];
+            }
+        }else{
+            [self.CM scanForPeripheralsWithServices:/*L8SL_Service/*/nil  options:0]; // Start scanning
+        }
+    }else{
+        [self.CM scanForPeripheralsWithServices:/*L8SL_Service/*/nil  options:0]; // Start scanning
+    }
+    // Start scanning
     return 0; // Started scanning OK !
+
 }
 
 
@@ -662,7 +684,11 @@
 - (void) connectPeripheral:(CBPeripheral *)peripheral
 {
     //logmethod();
-    printf("Connecting to peripheral with UUID : %s\r\n",[self UUIDToString:peripheral.UUID]);
+    NSString *valueID = [NSString stringWithFormat:@"%s",[self UUIDToString:peripheral.UUID]];
+    printf("Connecting to peripheral with UUID : %@\r\n",valueID);
+    
+    [[NSUserDefaults standardUserDefaults] setValue:valueID forKey:@"Last_L8_Device_Id"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     activePeripheral = peripheral;
     activePeripheral.delegate = self;
     if (!self.peripherals) {
@@ -958,7 +984,7 @@
  */
 -(CBService *) findServiceFromUUID:(CBUUID *)UUID p:(CBPeripheral *)p
 {
-    //logmethod();
+
     for(int i = 0; i < p.services.count; i++) {
         CBService *s = [p.services objectAtIndex:i];
         if ([self compareCBUUID:s.UUID UUID2:UUID]) return s;
@@ -1049,10 +1075,12 @@
     printf("Device found %s \r\n", [peripheral.name UTF8String]);
     if ([peripheral.name rangeOfString:@"L8"/*@"Keyfob"*/].location != NSNotFound) {
         [self connectPeripheral:peripheral];
+        self.activePeripheral = peripheral;
         printf("Found a keyfob, connecting..\n");
     } else {
         printf("Peripheral not a keyfob or callback was not because of a ScanResponse\n");
     }
+
     
     printf("didDiscoverPeripheral\r\n");
 }
@@ -1287,6 +1315,7 @@
 //        if ([TXNotifUUIDStr isEqualToString:CharUUID])
 //        {
             //Leer datos recibidos del L8SL...
+        
             [[self delegate] processDataFromPeripheral:characteristic.value];
 //        }
     }

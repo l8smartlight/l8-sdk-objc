@@ -21,6 +21,8 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define float_equal(a,b) (fabs((a) - (b)) < FLT_EPSILON)
 #define float_equal_zero(a) (fabs(a) < FLT_EPSILON)
 
+#define keyAppVersion [[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleVersion"]
+
 typedef void(^OnEndAnimationHandler)(void);
 
 @interface CommonUtil : NSObject
@@ -47,6 +49,10 @@ typedef void(^OnEndAnimationHandler)(void);
 
 + (UIColor *)darkerColorForColor:(UIColor *)color delta:(CGFloat)delta;
 
++(UIColor *)inverseColor:(UIColor *)color;
+
 + (BOOL)validateEmail:(NSString *)candidate;
+
++ (NSString *)hexToString:(NSString *)string;
 
 @end
