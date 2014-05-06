@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'l8-sdk-objc' target in the 'l8-sdk-objc' project
-//
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-#endif
