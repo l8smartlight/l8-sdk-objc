@@ -278,7 +278,7 @@ L8JSONOperationHandler f = ^(NSMutableDictionary *r) {
 
 ```
 
-#### Read L8 data (battery level, and so on)
+#### Read L8 data (battery level, memory and so on)
 
 ```objective-c
 
@@ -324,13 +324,13 @@ L8JSONOperationHandler f = ^(NSMutableDictionary *r) {
                           L8ProximityStatus *status = (L8ProximityStatus *)result;
                           NSLog(@"proximity: %@", status);
                       }
-                          failure:f];*/
+                          failure:f];
         [l8 readSensorStatus:[L8Sensor accelerationSensor]
                       withSuccess:^(L8SensorStatus *result) {
                           L8AccelerationStatus *status = (L8AccelerationStatus *)result;
                           NSLog(@"acceleration: %@", status);
                       }
-                          failure:f];*/
+                          failure:f];
 
 
 ```
