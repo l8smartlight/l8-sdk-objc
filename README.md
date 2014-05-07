@@ -147,7 +147,7 @@ MainViewController.m
 
 ## 3. Interact with L8:
 
-The followig examples are based on code above. We need a delegate of L8, it could be BluetoothL8 or RestfulL8 (simulator), in this case our exmaple use a real L8 device:
+The followig examples are based on code above. We need a delegate of L8, it could be BluetoothL8 or RestfulL8 (simulator), in this case our example use a real L8 device:
 
 ```objective-c
 
