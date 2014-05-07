@@ -14,7 +14,7 @@ With L8SDK installed in to your project you have to import l8_sdk_objc.h, TIBLEC
 
 In this way, in our MainViewController.h we have:
 
-```smalltalk
+```objective-c
 
 #import <UIKit/UIKit.h>
 
