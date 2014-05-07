@@ -28,3 +28,48 @@ In this way, in our MainViewController.h we have:
 
 
 ```
+
+MainViewController.m
+
+```objective-c
+
+#import "MainViewController.h"
+#import "l8_sdk_objc.h"
+#import "ColorUtils.h"
+#import "TIBLECBKeyfob.h"
+#import "BluetoothL8.h"
+
+@interface MainViewController ()
+
+@property (nonatomic,strong) TIBLECBKeyfob *t; //We connect to l8 through TIBLECBKeyfob 
+
+@end
+
+@implementation MainViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    self.t = [[TIBLECBKeyfob alloc] init];   // Init TIBLECBKeyfob class.
+    [self.t controlSetup:1];                 // Do initial setup of TIBLECBKeyfob class.
+    self.t.delegate = self;                  // set delegate 
+
+    [super viewDidLoad];
+   
+    [self initConnection];                  //We have to wait one second beacuse bluetooth must be ready before try to connect to l8 
+}
+
+
+@end
+
+```
+
+
