@@ -64,9 +64,106 @@ MainViewController.m
 
     [super viewDidLoad];
    
-    [self initConnection];                  //We have to wait one second beacuse bluetooth must be ready before try to connect to l8 
+    [self initConnection];                  //We have to wait one second beacuse CoreBluetooth must be ready before try to connect to l8 device
 }
 
+-(void)initConnection{                      //you can wait one secand in this way
+    double delayInSeconds = 1.0; 
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self connectToL8];     //connect to L8
+    });
+
+}
+
+//we have to implements the following delegate methods
+
+-(void)connectToL8{
+    NSLog(@"Connecting with l8...");
+    if (self.t.activePeripheral)                                                   //Check if we have already any connection
+        if(self.t.activePeripheral.isConnected)
+            [[self.t CM] cancelPeripheralConnection:[self.t activePeripheral]];   //We cancel any previous connection
+    if (self.t.peripherals)
+        self.t.peripherals = nil;
+    [self.t findBLEPeripherals:10];                                              //Scans during 10 seconds for L8 devices
+    BluetoothL8 *l8Bluetooth=[[BluetoothL8 alloc]init];                          //Instantiates a BluetoothL8 and set TIBLECBKeyfob
+    l8Bluetooth.t=self.t;
+    self.l8Array=[[NSMutableArray alloc] initWithObjects:l8Bluetooth, nil];     //at this point we are now connected to an L8 device we have to wait for keyfobReady invocation
+}
+
+-(void) keyfobReady{
+    NSLog(@"bt ready");
+    id<L8> l8=[self.l8Array lastObject];
+    //TODO: Clear not found in this method
+    [l8 clearMatrixWithSuccess:^{NSLog(@"matrix cleared");} failure:^(NSMutableDictionary *result) {
+        NSLog(@"Error matrix cleared");
+    }];
+    for(int i=0;i<[[self.t userPeripherals] count];i++){
+        
+        
+        if([[[[self.t userPeripherals] objectAtIndex:i] valueForKey:@"isUserChecked"] isEqualToString:@"YES"]){
+            CBPeripheral * activePeripheralUser = [[[self.t userPeripherals] objectAtIndex:i] valueForKey:@"peripheral"];
+            [self.t L8SL_PrepareForReceiveDataFromL8SL:activePeripheralUser];
+            
+            usleep(800);
+        }
+        
+    }
+    
+    NSString *prubeString = @"#5cff5c-#60f83f-#5cff5c-#5cff5c-#5cff5c-#5cff5c-#5cff5c-#5cff5c-#00ff00-#60f83f-#60f83f-#60f83f-#00ff00-#00ff00-#ffffff-#ffffff-#60f83f-#60f83f-#60f83f-#00ff00-#ffffff-#ffffff-#ffffff-#ffffff-#34b918-#34b918-#34b918-#34b918-#ffffff-#ffffff-#34b918-#34b918-#ffffff-#ffffff-#34b918-#ffffff-#ffffff-#ffffff-#34b918-#34b918-#34b918-#ffffff-#ffffff-#ffffff-#ffffff-#34b918-#34b918-#03a603-#03a603-#03a603-#ffffff-#ffffff-#03a603-#03a603-#03a603-#03a603-#017001-#017001-#017001-#ffffff-#017001-#017001-#017001-#017001-#3dfa3d";
+    NSArray *subStrings = [prubeString componentsSeparatedByString:@"-#"];
+    
+    [l8  setMatrix:subStrings withSuccess:^{NSLog(@"send Ok");} failure:^(NSMutableDictionary *result) {
+        NSLog(@"setLED ERROR");
+    }];
+    
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        [l8 clearMatrixWithSuccess:^{
+            
+        } failure:^(NSMutableDictionary *result) {
+            
+        }];
+        
+        [l8 clearSuperLEDWithSuccess:^(NSArray *result) {
+            
+        } failure:^(NSMutableDictionary *result) {
+            
+        }];
+    });
+    self.t.delegate=self;
+}
+
+-(void)configUpdated:(NSData *)config{
+    
+}
+
+
+-(void)TXPwrLevelUpdated:(char)TXPwr{
+    
+}
+
+-(void)notificationRcvd:(Byte)not1{
+    
+}
+
+-(void)keyValuesUpdated:(char)sw{
+    
+}
+
+-(void)accelerometerValuesUpdated:(char)x y:(char)y z:(char)z{
+    
+}
+
+-(void)batteryLevelRcvd:(Byte)batLvl{
+    
+}
+
+-(void)processDataFromPeripheral:(NSData *)data{
+    NSLog(@"data l8: %@",data);
+}
 
 @end
 
