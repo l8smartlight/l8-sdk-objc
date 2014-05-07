@@ -145,3 +145,198 @@ MainViewController.m
 
 ```
 
+## 3. Interact with L8:
+
+The followig examples are based on code above. We need a delegate of L8, it could be BluetoothL8 or RestfulL8 (simulator), in this case our exmaple use a real L8 device:
+
+```objective-c
+
+id<L8> l8=[self.l8Array lastObject];
+
+```
+
+#### Set Super led:
+
+```objective-c
+
+//All code block types are defined in l8_sdk_objc.h
+
+  L8VoidOperationHandler v = ^() {
+            NSLog(@"success");
+        };
+
+L8JSONOperationHandler f = ^(NSMutableDictionary *r) {
+            NSLog(@"failure: %@", r);
+        };
+
+ [l8 setSuperLED:[UIColor yellowColor] withSuccess:v failure:f];
+
+
+```
+#### Set led (x,y)
+
+```objective-c
+
+ [self.l8 setLED:CGPointMake(0, 0) color:[UIColor cyanColor] withSuccess:v failure:f];
+
+```
+
+#### Clear led (x,y)
+
+```objective-c
+
+[l8 clearLED:CGPointMake(7, 7) withSuccess:v failure:f];
+
+```
+
+#### Read led (x,y)
+
+```objective-c
+
+ L8ColorOperationHandler c = ^(UIColor *result) {
+            NSLog(@"success: %@", [result stringValue]);
+        };
+
+  [l8 readLED:CGPointMake(2, 3) withSuccess:c failure:f];
+
+```
+
+#### Read superLed 
+
+```objective-c
+
+ L8ColorOperationHandler c = ^(UIColor *result) {
+            NSLog(@"success: %@", [result stringValue]);
+        };
+        
+     [l8 readSuperLEDWithSuccess:c failure:f];
+     
+```
+
+#### Clear matrix
+
+```objective-c
+
+[l8 clearMatrixWithSuccess:v failure:f];
+
+```
+
+#### Set matrix
+
+```objective-c
+
+ NSString *check = @"#5cff5c-#60f83f-#5cff5c-#5cff5c-#5cff5c-#5cff5c-#5cff5c-#5cff5c-#00ff00-#60f83f-#60f83f-#60f83f-#00ff00-#00ff00-#ffffff-#ffffff-#60f83f-#60f83f-#60f83f-#00ff00-#ffffff-#ffffff-#ffffff-#ffffff-#34b918-#34b918-#34b918-#34b918-#ffffff-#ffffff-#34b918-#34b918-#ffffff-#ffffff-#34b918-#ffffff-#ffffff-#ffffff-#34b918-#34b918-#34b918-#ffffff-#ffffff-#ffffff-#ffffff-#34b918-#34b918-#03a603-#03a603-#03a603-#ffffff-#ffffff-#03a603-#03a603-#03a603-#03a603-#017001-#017001-#017001-#ffffff-#017001-#017001-#017001-#017001-#3dfa3d";
+    NSArray *subStrings = [check componentsSeparatedByString:@"-#"];
+    
+    [l8  setMatrix:subStrings withSuccess:^{NSLog(@"send Ok");} failure:^(NSMutableDictionary *result) {
+        NSLog(@"set Matrix ERROR");
+    }];
+
+
+```
+
+#### Create animations
+
+```objective-c
+
+       NSMutableArray *colorMatrix1 = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix1 addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix1 objectAtIndex:i] addObject:[UIColor redColor]];
+            }
+        }
+        L8Frame *frame1 = [[L8Frame alloc] init];
+        [frame1 setColorMatrix:colorMatrix1];
+        [frame1 setDuration:100];
+        
+        NSMutableArray *colorMatrix2 = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix2 addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix2 objectAtIndex:i] addObject:[UIColor blueColor]];
+            }
+        }
+        L8Frame *frame2 = [[L8Frame alloc] init];
+        [frame2 setColorMatrix:colorMatrix2];
+        [frame2 setDuration:100];
+        
+        NSMutableArray *colorMatrix3 = [NSMutableArray arrayWithCapacity:8];
+        for (int i = 0; i < 8; i++) {
+            [colorMatrix3 addObject:[NSMutableArray arrayWithCapacity:8]];
+            for (int j = 0; j < 8; j++) {
+                [[colorMatrix3 objectAtIndex:i] addObject:[UIColor yellowColor]];
+            }
+        }
+        L8Frame *frame3 = [[L8Frame alloc] init];
+        [frame3 setColorMatrix:colorMatrix3];
+        [frame3 setDuration:200];
+        
+        L8Animation *animation = [[L8Animation alloc] init];
+        animation.frames = [NSMutableArray arrayWithObjects:frame1, frame2, frame3, nil];
+        [l8 setAnimation:animation withSuccess:v failure:f];
+
+```
+
+#### Read L8 data (battery level, and so on)
+
+```objective-c
+
+        L8IntegerOperationHandler i = ^(NSInteger result) {
+            NSLog(@"success: %d", result);
+        };
+        L8BooleanOperationHandler b = ^(BOOL result) {
+            NSLog(@"success: %@", result? @"Y": @"N");
+        };
+        L8VersionOperationHandler r = ^(L8Version *result) {
+            NSLog(@"success: %d %d", result.hardware, result.software);
+        };
+
+        [l8 readBatteryStatusWithSuccess:i failure:f];
+        [l8 readButtonWithSuccess:i failure:f];
+        [l8 readMemorySizeWithSuccess:i failure:f];
+        [l8 readFreeMemoryWithSuccess:i failure:f];
+        
+        [l8 readBluetoothEnabledWithSuccess:b failure:f];
+        
+        [l8 readVersionWithSuccess:r failure:f];
+
+```
+
+#### Read data from sensors
+
+```objective-c
+
+        [l8 readSensorsStatusWithSuccess:^(NSArray *result) {
+            NSLog(@"sensors %@", result);
+        }
+                                      failure:f];
+        
+        
+        [l8 readSensorStatus:[L8Sensor temperatureSensor]
+                      withSuccess:^(L8SensorStatus *result) {
+                          L8TemperatureStatus *status = (L8TemperatureStatus *)result;
+                          NSLog(@"temperature: %@", status);
+                      }
+                          failure:f];
+        [l8 readSensorStatus:[L8Sensor proximitySensor]
+                      withSuccess:^(L8SensorStatus *result) {
+                          L8ProximityStatus *status = (L8ProximityStatus *)result;
+                          NSLog(@"proximity: %@", status);
+                      }
+                          failure:f];*/
+        [l8 readSensorStatus:[L8Sensor accelerationSensor]
+                      withSuccess:^(L8SensorStatus *result) {
+                          L8AccelerationStatus *status = (L8AccelerationStatus *)result;
+                          NSLog(@"acceleration: %@", status);
+                      }
+                          failure:f];*/
+
+
+```
+
+
+
+
+
+
